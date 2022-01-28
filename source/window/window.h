@@ -2,10 +2,6 @@
 #include "../global.h"
 
 
-enum WindowFlag {
-
-    None = 0
-};
 
 class Window {
 public:
@@ -15,9 +11,13 @@ public:
     ~Window();
 
     bool IsOpen();
+    void BeginDrawState();
+    void EndDrawState();
 
     GLFWwindow* GetContextPointer();
 
+private:
+    GLFWwindow* m_ContextPointer=nullptr;
     
 
 };

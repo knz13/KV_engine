@@ -3,7 +3,7 @@
 
 
 class RegistrySetters {
-
+public:
     
 
 

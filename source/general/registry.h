@@ -2,6 +2,7 @@
 #include "global.h"
 #include "registry_getters.h"
 #include "registry_setters.h"
+#include "registry_creates.h"
 
 
 

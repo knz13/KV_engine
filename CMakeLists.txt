@@ -74,7 +74,7 @@ if(NOT ${glew_exists})
     GIT_REPOSITORY https://github.com/Perlmint/glew-cmake
     GIT_TAG glew-cmake-2.2.0
     CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/glew
-    BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<IF:$<CONFIG:Debug>,d,"">${CMAKE_STATIC_LIBRARY_SUFFIX}
+    BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX}
 )
     
     list(APPEND DEPS_TO_BUILD GLEW)
@@ -110,7 +110,7 @@ if(NOT ${assimp_exists})
                         
                 -DASSIMP_INSTALL_PDB=OFF
                         
-    BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}assimp-vc142-mtd${CMAKE_STATIC_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic$<IF:$<CONFIG:Debug>,d,"">${CMAKE_STATIC_LIBRARY_SUFFIX}
+    BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}assimp-vc142-mtd${CMAKE_STATIC_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX}
 )
     
     list(APPEND DEPS_TO_BUILD ASSIMP)
@@ -160,10 +160,10 @@ add_executable(${PROJECT_NAME}
     
     #source files...
     ${PROJECT_SOURCE_DIR}/main.cpp
-${PROJECT_SOURCE_DIR}/source/window/window.cpp
-${PROJECT_SOURCE_DIR}/source/general/registry.cpp
-${PROJECT_SOURCE_DIR}/source/general/registry_creates.cpp
-${PROJECT_SOURCE_DIR}/source/general/registry_getters.cpp
+	${PROJECT_SOURCE_DIR}/source/window/window.cpp
+	${PROJECT_SOURCE_DIR}/source/general/registry.cpp
+	${PROJECT_SOURCE_DIR}/source/general/registry_creates.cpp
+	${PROJECT_SOURCE_DIR}/source/general/registry_getters.cpp
 )
         
 #setting c/cpp standard
@@ -191,17 +191,18 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glfw/
                 
 #linking for glew...
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<IF:$<CONFIG:Debug>,d,"">${CMAKE_STATIC_LIBRARY_SUFFIX})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
                 
                 
 #linking for ryml...
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/ryml/lib/${CMAKE_STATIC_LIBRARY_PREFIX}ryml${CMAKE_STATIC_LIBRARY_SUFFIX})
-                
-                
+
+find_package(OpenGL)
 #linking for assimp...
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic$<IF:$<CONFIG:Debug>,d,"">${CMAKE_STATIC_LIBRARY_SUFFIX})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
                 
 #include directories
             
