@@ -25,3 +25,7 @@ Window& RegistryGetters::SubWindow(std::string windowName) {
         return *Registry::m_SubWindows[windowName].get();
     }
 }
+
+std::unordered_map<std::string,std::unique_ptr<Window>>& RegistryGetters::SubWindows() {
+    return Registry::m_SubWindows;
+}

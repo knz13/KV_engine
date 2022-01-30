@@ -1,6 +1,6 @@
 
 #setting cmake version
-        
+
 cmake_minimum_required(VERSION 3.18)
 
 #adding useful functions
@@ -23,22 +23,26 @@ endif()
 
 endfunction()
 
-        
 #adding extra cmake libs
 include(ExternalProject)
 include(FetchContent)
-        
+
 #creating variables for ease of adding libraries
 set(DEPS_TO_BUILD )
-        
+
 #project name
-project("test")
+project("test_proj")
         
         
+            
+#-------------- external repositories ---------------
+            
+            
+
+# repository download for imgui...
                     
 dir_exists(imgui_exists ${PROJECT_SOURCE_DIR}/vendor/imgui)
-                    
-                    
+
 if(NOT ${imgui_exists})
     FetchContent_Declare(IMGUI
     GIT_REPOSITORY https://github.com/ocornut/imgui
@@ -51,6 +55,9 @@ if(NOT ${imgui_exists})
 endif()
                     
                     
+
+# repository download for glfw...
+                    
 dir_exists(glfw_exists ${PROJECT_SOURCE_DIR}/vendor/glfw)
 
 if(NOT ${glfw_exists})
@@ -59,13 +66,16 @@ if(NOT ${glfw_exists})
     GIT_TAG 3.3.6
     CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/glfw
     BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX}
-)
-    
+    )
+
     list(APPEND DEPS_TO_BUILD GLFW)
 
 endif()
 
 
+                    
+
+# repository download for glew...
                     
 dir_exists(glew_exists ${PROJECT_SOURCE_DIR}/vendor/glew)
 
@@ -75,13 +85,16 @@ if(NOT ${glew_exists})
     GIT_TAG glew-cmake-2.2.0
     CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/glew
     BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX}
-)
-    
+    )
+
     list(APPEND DEPS_TO_BUILD GLEW)
 
 endif()
 
 
+                    
+
+# repository download for ryml...
                     
 dir_exists(ryml_exists ${PROJECT_SOURCE_DIR}/vendor/ryml)
 
@@ -91,13 +104,16 @@ if(NOT ${ryml_exists})
     GIT_TAG v0.3.0
     CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/ryml
     BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/ryml/lib/${CMAKE_STATIC_LIBRARY_PREFIX}c4core${CMAKE_STATIC_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/vendor/ryml/lib/${CMAKE_STATIC_LIBRARY_PREFIX}ryml${CMAKE_STATIC_LIBRARY_SUFFIX}
-)
-    
+    )
+
     list(APPEND DEPS_TO_BUILD RYML)
 
 endif()
 
 
+                    
+
+# repository download for assimp...
                     
 dir_exists(assimp_exists ${PROJECT_SOURCE_DIR}/vendor/assimp)
 
@@ -111,18 +127,19 @@ if(NOT ${assimp_exists})
                 -DASSIMP_INSTALL_PDB=OFF
                         
     BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}assimp-vc142-mtd${CMAKE_STATIC_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX}
-)
-    
+    )
+
     list(APPEND DEPS_TO_BUILD ASSIMP)
 
 endif()
 
 
                     
+
+# repository download for glm...
                     
 dir_exists(glm_exists ${PROJECT_SOURCE_DIR}/vendor/glm)
-                    
-                    
+
 if(NOT ${glm_exists})
     FetchContent_Declare(GLM
     GIT_REPOSITORY https://github.com/g-truc/glm
@@ -135,10 +152,11 @@ if(NOT ${glm_exists})
 endif()
                     
                     
+
+# repository download for thread_pool...
                     
 dir_exists(thread_pool_exists ${PROJECT_SOURCE_DIR}/vendor/thread_pool)
-                    
-                    
+
 if(NOT ${thread_pool_exists})
     FetchContent_Declare(THREAD_POOL
     GIT_REPOSITORY https://github.com/bshoshany/thread-pool
@@ -151,25 +169,27 @@ if(NOT ${thread_pool_exists})
 endif()
                     
                     
-        
+#finding packages...            
+
+    find_package(OpenGL REQUIRED)
+
+
 #creating executable
-add_executable(${PROJECT_NAME} 
-    
-    #source globs...
-    
-    
+add_executable(${PROJECT_NAME}
+
     #source files...
     ${PROJECT_SOURCE_DIR}/main.cpp
 	${PROJECT_SOURCE_DIR}/source/window/window.cpp
 	${PROJECT_SOURCE_DIR}/source/general/registry.cpp
 	${PROJECT_SOURCE_DIR}/source/general/registry_creates.cpp
 	${PROJECT_SOURCE_DIR}/source/general/registry_getters.cpp
+	${PROJECT_SOURCE_DIR}/source/general/color.cpp
 )
         
 #setting c/cpp standard
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
-        
+
         
 #adding dependencies
 
@@ -181,38 +201,69 @@ endforeach()
 
 
             
-#linking libraries
+# ------------- linking libraries -------------
             
-                
-#linking for glfw...
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
-                
-                
-#linking for glew...
+    #linking for glfw...
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
-                
-                
-#linking for ryml...
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/ryml/lib/${CMAKE_STATIC_LIBRARY_PREFIX}ryml${CMAKE_STATIC_LIBRARY_SUFFIX})
-
-find_package(OpenGL)
-#linking for assimp...
-
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
                 
-#include directories
+
+    #linking for glew...
+
+
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
+                
+
+    #linking for ryml...
+
+
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/ryml/lib/${CMAKE_STATIC_LIBRARY_PREFIX}c4core${CMAKE_STATIC_LIBRARY_SUFFIX})
+                
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/ryml/lib/${CMAKE_STATIC_LIBRARY_PREFIX}ryml${CMAKE_STATIC_LIBRARY_SUFFIX})
+                
+
+    #linking for assimp...
+
+
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}assimp-vc142-mtd${CMAKE_STATIC_LIBRARY_SUFFIX})
+                
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
+                
+
+    #linking for OpenGL...
+
+
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
+                
+
+#------------ include directories -------------
+
             
-            
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/imgui)
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glfw/include)
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glew/include)
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/ryml/include)
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/assimp/include)
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glm)
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/thread_pool)
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor)
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/source)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/imgui)
+    
+
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glfw/include)
+    
+
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glew/include)
+    
+
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/ryml/include)
+    
+
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/assimp/include)
+    
+
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glm)
+    
+
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/thread_pool)
+    
+
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor)
+    
+
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/source)
+    

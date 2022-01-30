@@ -15,6 +15,7 @@
 #include "ryml_std.hpp"
 #include "thread_pool.hpp"
 #include "general/structures.h"
+#include "general/color.h"
 
 using namespace std;
 
@@ -23,9 +24,9 @@ using namespace std;
     #define DEBUG_WARN(x)
     #define DEBUG_ERROR(x)
 #else
-    #define DEBUG_LOG(x) cout << "LOG: " << x << endl <<  " at "<< __LINE__ << endl << " in file: " << __FILE__ << endl
-    #define DEBUG_WARN(x) cout << "WARNING: " << x << endl <<  " at "<< __LINE__ << endl << " in file: " << __FILE__ << endl
-    #define DEBUG_ERROR(x) cout << "ERROR! -> " << x  << endl <<  " at "<< __LINE__ << endl << " in file: " << __FILE__ << endl; __debugbreak()
+    #define DEBUG_LOG(x) cout << "LOG: " << x << endl <<  "At "<< __LINE__ << endl << " In file: " << __FILE__ << endl
+    #define DEBUG_WARN(x) cout << "WARNING: " << x << endl <<  "At "<< __LINE__ << endl << " In file: " << __FILE__ << endl
+    #define DEBUG_ERROR(x) cout << "ERROR! -> " << x  << endl <<  "At "<< __LINE__ << endl << " In file: " << __FILE__ << endl; __debugbreak()
 #endif
 
 static void ClearGLErrors(){

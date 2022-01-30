@@ -5,23 +5,10 @@
 
 int main(){
     WindowCreationProperties prop;
-    prop.title = "Hey I'm a window!";
-    
-    Window& win = Registry::Create().MainWindow(prop);
+    prop.title = "Hey I'm a sub window!";
+    Window& win = Registry::Create().SubWindow("hello!",prop);
 
-
-    while(win.IsOpen()){
-
-        
-        win.BeginDrawState();
-
-
-
-
-        win.EndDrawState();
-
-
-    }
+    Registry::MainLoop();
 
     
 }

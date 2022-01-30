@@ -16,6 +16,11 @@ public:
     static RegistryCreates Create();
     static RegistryGetters Get();
     static RegistrySetters Set();
+    
+    /**
+     * Calls the main loop function for each of the windows
+     */
+    static void MainLoop();
 
     template<typename T>
     static bool IsFutureDone(std::future<T>& fut);
