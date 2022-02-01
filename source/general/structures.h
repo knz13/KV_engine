@@ -9,9 +9,15 @@ enum WindowFlag {
     OpenGLDebugContext = 8,
     NotDecorated=16,
     FullScreen=32,
-    CoreProfile=64
+    CoreProfile=64,
+    FocusOnShow=128
 };
 
+struct VertexBufferProperties {
+
+    
+
+};
 
 struct WindowCreationProperties {
     int width=640;

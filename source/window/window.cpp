@@ -23,6 +23,10 @@ Window::Window(WindowCreationProperties prop) {
         if(prop.windowFlags & WindowFlag::NotFocused){
             glfwWindowHint(GLFW_FOCUSED,GLFW_FALSE);
         }
+        if(prop.windowFlags & WindowFlag::FocusOnShow){
+            glfwWindowHint(GLFW_FOCUS_ON_SHOW,GLFW_TRUE);
+        }
+        
         if((prop.openGLVersionMajor == 3 && prop.openGLVersionMinor > 2) || prop.openGLVersionMajor > 3){
             if(prop.windowFlags & WindowFlag::CoreProfile){
                 glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
@@ -57,7 +61,7 @@ Window::Window(WindowCreationProperties prop) {
 }
 
 Window::~Window() {
-    
+    glfwDestroyWindow(m_ContextPointer);
 }
 
 bool Window::IsOpen() {

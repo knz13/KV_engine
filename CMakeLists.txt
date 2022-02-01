@@ -180,10 +180,13 @@ add_executable(${PROJECT_NAME}
     #source files...
     ${PROJECT_SOURCE_DIR}/main.cpp
 	${PROJECT_SOURCE_DIR}/source/window/window.cpp
+	${PROJECT_SOURCE_DIR}/source/general/color.cpp
 	${PROJECT_SOURCE_DIR}/source/general/registry.cpp
 	${PROJECT_SOURCE_DIR}/source/general/registry_creates.cpp
 	${PROJECT_SOURCE_DIR}/source/general/registry_getters.cpp
-	${PROJECT_SOURCE_DIR}/source/general/color.cpp
+	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/vertex_buffer.cpp
+	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/vertex_array.cpp
+	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/index_buffer.cpp
 )
         
 #setting c/cpp standard

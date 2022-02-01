@@ -17,7 +17,7 @@ glm::vec3 Color::Normalized() {
     return glm::vec3(m_ColorValue.x*255,m_ColorValue.y*255,m_ColorValue.z*255);
 }
 
-void Color::Set(int r, int g, int b) {
+void Color::Set(unsigned char r, unsigned char g, unsigned char b) {
     m_ColorValue.x = r;
     m_ColorValue.y = g;
     m_ColorValue.z = b;
@@ -32,7 +32,7 @@ void Color::Set(float r, float g, float b) {
 void Color::Modify(std::function<void(glm::ivec3&)> changeFunction) {
     changeFunction(m_ColorValue);
 }
-Color::Color(int r, int g, int b) {
+Color::Color(unsigned char r, unsigned char g, unsigned char b) {
     m_ColorValue.x = r;
     m_ColorValue.y = g;
     m_ColorValue.z = b;

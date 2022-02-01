@@ -19,14 +19,35 @@
 
 using namespace std;
 
+
+#define GL_SIZEOF(x) TestSize(x)
+
+
+static unsigned int TestSize(unsigned int dataType) {
+    switch (dataType) {
+    case GL_FLOAT:
+        return sizeof(float);
+    case GL_UNSIGNED_INT:
+        return sizeof(unsigned int);
+    case GL_UNSIGNED_BYTE:
+        return sizeof(unsigned char);
+    case GL_BYTE:
+        return sizeof(char);
+    case GL_INT:
+        return sizeof(int);
+    default:
+        return 0;
+    }
+}
+
 #ifdef NDEBUG
     #define DEBUG_LOG(x)
     #define DEBUG_WARN(x)
     #define DEBUG_ERROR(x)
 #else
-    #define DEBUG_LOG(x) cout << "LOG: " << x << endl <<  "At "<< __LINE__ << endl << " In file: " << __FILE__ << endl
-    #define DEBUG_WARN(x) cout << "WARNING: " << x << endl <<  "At "<< __LINE__ << endl << " In file: " << __FILE__ << endl
-    #define DEBUG_ERROR(x) cout << "ERROR! -> " << x  << endl <<  "At "<< __LINE__ << endl << " In file: " << __FILE__ << endl; __debugbreak()
+    #define DEBUG_LOG(x) cout << "LOG: " << x << endl <<  "At line: "<< __LINE__ << endl << "In file: " << __FILE__ << endl
+    #define DEBUG_WARN(x) cout << "WARNING: " << x << endl <<  "At line: "<< __LINE__ << endl << "In file: " << __FILE__ << endl
+    #define DEBUG_ERROR(x) cout << "ERROR! -> " << x  << endl <<  "At line: "<< __LINE__ << endl << "In file: " << __FILE__ << endl; __debugbreak()
 #endif
 
 static void ClearGLErrors(){

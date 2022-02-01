@@ -6,7 +6,7 @@
 class Color {
 public:
     
-    Color(int r,int g,int b);
+    Color(unsigned char r,unsigned char g,unsigned char b);
 
 
     /**
@@ -27,7 +27,7 @@ public:
     /**
      * Sets the color from rgb values from 0 to 255
      */
-    void Set(int r,int g,int b);
+    void Set(unsigned char r,unsigned char g,unsigned char b);
     
     /**
      * A function to modify the color value as needed

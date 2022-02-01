@@ -17,6 +17,8 @@ Window& RegistryCreates::MainWindow(WindowCreationProperties prop) {
 }
 
 Window& RegistryCreates::SubWindow(std::string windowName, WindowCreationProperties prop) {
+    prop.windowFlags &= WindowFlag::NotDecorated;
+
     if(!Registry::m_MainWindow) {
         DEBUG_WARN("Creating subwindow with name '" +windowName +  "' before main one, prefer otherwise!");
         Registry::m_MainWindow = std::make_unique<Window>(WindowCreationProperties());
@@ -32,3 +34,5 @@ Window& RegistryCreates::SubWindow(std::string windowName, WindowCreationPropert
     return *Registry::m_SubWindows[windowName].get();
 
 }
+
+

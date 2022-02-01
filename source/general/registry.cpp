@@ -48,16 +48,25 @@ void Registry::MainLoop() {
         
         m_MainWindow.get()->EndDrawState();
 
-        for(auto& window : m_SubWindows){
-            if(window.second.get()->IsOpen()){
-                glfwMakeContextCurrent(window.second.get()->m_ContextPointer);
-                window.second.get()->BeginDrawState();
-                window.second.get()->m_DrawingLoop(*window.second.get());
-                window.second.get()->EndDrawState();
+        std::unordered_map<std::string,std::unique_ptr<Window>>::iterator it = m_SubWindows.begin();
+        while(it != m_SubWindows.end()){
+            if(it->second.get()->IsOpen()){
+                glfwMakeContextCurrent(it->second.get()->m_ContextPointer);
+                it->second.get()->BeginDrawState();
+                it->second.get()->m_DrawingLoop(*it->second.get());
+                it->second.get()->EndDrawState();
+                it++;
+            }
+            else {
+                it = m_SubWindows.erase(it);
             }
         }    
 
 
     }
 
+}
+
+RegistryDeleters Registry::Delete() {
+    return RegistryDeleters();
 }
