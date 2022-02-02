@@ -76,15 +76,18 @@ void Window::EndDrawState() {
     glfwSwapBuffers(m_ContextPointer);
 }
 
-void Window::BeginDrawState(Color color) {
+void Window::BeginDrawState() {
     glfwPollEvents();
 
-    glm::vec3 colorInt = color.AsIntegers();
-    GL_CALL(glClearColor(colorInt.x,colorInt.y,colorInt.z,0.0f));
-
+    glm::vec3 color = m_ClearColor.Normalized();
+    GL_CALL(glClearColor(color.x,color.y,color.z,1.0f));
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
 }
 
 void Window::SetDrawingLoop(std::function<void(Window&)> windowFunc) {
     m_DrawingLoop = windowFunc;
+}
+
+void Window::SetClearColor(Color color) {
+    m_ClearColor = color;
 }

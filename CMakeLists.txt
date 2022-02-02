@@ -187,6 +187,7 @@ add_executable(${PROJECT_NAME}
 	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/vertex_buffer.cpp
 	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/vertex_array.cpp
 	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/index_buffer.cpp
+	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/shader.cpp
 )
         
 #setting c/cpp standard

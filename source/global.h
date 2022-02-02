@@ -40,6 +40,9 @@ static unsigned int TestSize(unsigned int dataType) {
     }
 }
 
+
+#define LOG(x) cout << "LOG: " << x << endl <<  "At line: "<< __LINE__ << endl << "In file: " << __FILE__ << endl
+
 #ifdef NDEBUG
     #define DEBUG_LOG(x)
     #define DEBUG_WARN(x)

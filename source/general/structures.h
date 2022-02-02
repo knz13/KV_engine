@@ -13,9 +13,15 @@ enum WindowFlag {
     FocusOnShow=128
 };
 
-struct VertexBufferProperties {
+enum ShaderType {
+    Vertex=0,
+    Fragment,
+};
 
-    
+struct ShaderProperties {
+    std::string source;
+    unsigned int shaderType;
+
 
 };
 
