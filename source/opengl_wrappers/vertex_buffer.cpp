@@ -18,6 +18,7 @@ void VertexBuffer::Unbind() {
 
 VertexBuffer::VertexBuffer(VertexArray& master) : m_Master(master) {
     auto destructor = [](unsigned int* id){
+        DEBUG_LOG("deleting vertex buffer!");
         GL_CALL(glDeleteBuffers(1,id));
         delete id;
     };
@@ -39,6 +40,7 @@ void VertexBuffer::Generate() {
         size += attribute.offsetSize;
     }
     this->Bind();
+    m_Master.Bind();
     GL_CALL(glBufferData(GL_ARRAY_BUFFER,size,NULL,GL_STATIC_DRAW));
 
     unsigned int offset = 0;

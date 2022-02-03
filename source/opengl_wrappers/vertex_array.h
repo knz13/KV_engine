@@ -7,12 +7,11 @@ public:
     VertexArray();
 
 
-    VertexBuffer& SetVertexBuffer(unsigned int numberOfElementsPerVertex);
-    VertexBuffer& SetVertexBuffer();
-    IndexBuffer& SetIndexBuffer();
+    VertexBuffer& CreateVertexBuffer(unsigned int numberOfVertices);
+    VertexBuffer& CreateVertexBuffer();
+    IndexBuffer& CreateIndexBuffer();
 
-    VertexBuffer& GetVertexBuffer();
-    IndexBuffer& GetIndexBuffer();
+    bool HasIndexBuffer();
 
     void Bind();
     void Unbind();

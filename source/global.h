@@ -43,6 +43,7 @@ static unsigned int TestSize(unsigned int dataType) {
 
 #define LOG(x) cout << "LOG: " << x << endl <<  "At line: "<< __LINE__ << endl << "In file: " << __FILE__ << endl
 
+
 #ifdef NDEBUG
     #define DEBUG_LOG(x)
     #define DEBUG_WARN(x)
@@ -59,17 +60,19 @@ static void ClearGLErrors(){
     }
 }
 
-static void GetGLError(){
+static bool GetGLError(int line,std::string file){
     GLenum code = glGetError();
     if(code != GL_NO_ERROR){
-        DEBUG_ERROR(gluErrorString(code));
+        cout << "OpenGL error '" << gluErrorString(code) << "' \nAt line: " << line << " \nIn file: " << file << endl;
+        return true;
     }
+    return false;
 }
 
 #ifdef NDEBUG
     #define GL_CALL(x) x 
 #else
-    #define GL_CALL(x) ClearGLErrors(); x; GetGLError()
+    #define GL_CALL(x) ClearGLErrors(); x; if(GetGLError(__LINE__,__FILE__)) {__debugbreak();}
 #endif
 
 

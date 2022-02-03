@@ -7,13 +7,13 @@ VertexArray::VertexArray(){
     m_ID = std::shared_ptr<unsigned int>(new unsigned int,deleter);
     GL_CALL(glGenVertexArrays(1,m_ID.get()));
 }
-VertexBuffer& VertexArray::SetVertexBuffer(unsigned int numberOfElementsPerVertex) {
+VertexBuffer& VertexArray::CreateVertexBuffer(unsigned int numberOfVertices) {
     m_VBO = std::make_unique<VertexBuffer>(*this);
-    m_VBO.get()->CreateNew(numberOfElementsPerVertex);
+    m_VBO.get()->CreateNew(numberOfVertices);
     return *m_VBO.get();
 }
 
-VertexBuffer& VertexArray::SetVertexBuffer() {
+VertexBuffer& VertexArray::CreateVertexBuffer() {
     m_VBO = std::make_unique<VertexBuffer>(*this);
     return *m_VBO.get();
 }
@@ -38,23 +38,10 @@ void VertexArray::Unbind() {
     }
 }
 
-IndexBuffer& VertexArray::SetIndexBuffer() {
+IndexBuffer& VertexArray::CreateIndexBuffer() {
     m_IB = std::make_unique<IndexBuffer>(*this);
     return *m_IB.get();
 }
-
-IndexBuffer& VertexArray::GetIndexBuffer() {
-    if(!m_IB){
-        DEBUG_LOG("Calling VertexArray::GetIndexBuffer without any buffer attached, returning new one...");
-        return this->SetIndexBuffer();
-    }
-    return *m_IB.get();
-}
-
-VertexBuffer& VertexArray::GetVertexBuffer() {
-    if(!m_VBO){
-        DEBUG_LOG("Calling VertexArray::GetVertexBuffer without any buffer attached, returning new one...");
-        return this->SetVertexBuffer();
-    }
-    return *m_VBO.get();
+bool VertexArray::HasIndexBuffer() {
+    return m_IB.operator bool();
 }

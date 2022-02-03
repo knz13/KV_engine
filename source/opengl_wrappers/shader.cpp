@@ -12,6 +12,7 @@ void Shader::Bind() {
     if(!m_ID){
         return;
     }
+    GL_CALL(glUseProgram(*m_ID.get()));
 }
 
 void Shader::Unbind() {
@@ -20,7 +21,7 @@ void Shader::Unbind() {
 
 
 
-void Shader::SetShader(std::unordered_map<ShaderType,std::vector<std::string>> sources) {
+void Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> sources) {
     
 
     for(auto& shader : sources){
@@ -32,8 +33,10 @@ void Shader::SetShader(std::unordered_map<ShaderType,std::vector<std::string>> s
         switch(type){
         case ShaderType::Vertex:
             GL_CALL(shaderID = glCreateShader(GL_VERTEX_SHADER));
+            break;
         case ShaderType::Fragment:
             GL_CALL(shaderID = glCreateShader(GL_FRAGMENT_SHADER)); 
+            break;
         }
 
         GLchar const* files[sources.size()];
@@ -58,10 +61,6 @@ void Shader::SetShader(std::unordered_map<ShaderType,std::vector<std::string>> s
     if(!LinkShader()){
         return;
     };
-
-    for(auto id : m_CompiledShadersCache){
-        GL_CALL(glDetachShader(*m_ID.get(),id));
-    }
 
 
 }
@@ -108,6 +107,8 @@ bool Shader::CompileShader(unsigned int shaderID) {
 
     GL_CALL(glAttachShader(*m_ID.get(),shaderID));
 
+    return true;
+
 }
 
 bool Shader::LinkShader() {
@@ -128,6 +129,7 @@ bool Shader::LinkShader() {
         
         
         for(auto id : m_CompiledShadersCache){
+            GL_CALL(glDetachShader(*m_ID.get(),id));
             GL_CALL(glDeleteShader(id));
         }
         
@@ -135,4 +137,29 @@ bool Shader::LinkShader() {
         
     }
 
+    return true;
+
+}
+
+ShaderCreationProperties& ShaderCreationProperties::AddShader(ShaderType type, std::string source) {
+    
+    if(m_Shaders.find(type) == m_Shaders.end()){
+        m_Shaders[type] = {source};
+        return *this;
+    }
+
+    m_Shaders[type].emplace_back(std::move(source));
+    return *this;
+}
+
+ShaderCreationProperties Shader::CreateNew() {
+    return ShaderCreationProperties(*this);
+}   
+
+void ShaderCreationProperties::Generate() {
+    m_Master->SetShaders(m_Shaders);
+}
+
+ShaderCreationProperties::ShaderCreationProperties(Shader& master) {
+    m_Master = &master;
 }
