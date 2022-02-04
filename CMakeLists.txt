@@ -220,29 +220,29 @@ install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 #installing includes
 
 
-install(DIRECTORY source/ DESTINATION include)
+install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h")
 
 
-install(DIRECTORY vendor DESTINATION include)
+install(DIRECTORY vendor DESTINATION include FILES_MATCHING PATTERN "*.h")
 
 
 #installing includes from dependencies...
 
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/imgui/ DESTINATION include)         
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/imgui/ DESTINATION include FILES_MATCHING PATTERN "*.h")  
 
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glfw/include/ DESTINATION include)         
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glfw/include/ DESTINATION include FILES_MATCHING PATTERN "*.h")  
 
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glew/include/ DESTINATION include)         
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glew/include/ DESTINATION include FILES_MATCHING PATTERN "*.h")  
 
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/ryml/include/ DESTINATION include)         
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/ryml/include/ DESTINATION include FILES_MATCHING PATTERN "*.h")  
 
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/assimp/include/ DESTINATION include)         
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/assimp/include/ DESTINATION include FILES_MATCHING PATTERN "*.h")  
 
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glm/ DESTINATION include)         
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glm/ DESTINATION include FILES_MATCHING PATTERN "*.h")  
 
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/thread_pool/ DESTINATION include)         
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/thread_pool/ DESTINATION include FILES_MATCHING PATTERN "*.h")  
 
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/entt/src/ DESTINATION include)         
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/entt/src/ DESTINATION include FILES_MATCHING PATTERN "*.h")  
 
 #adding dependencies
 
