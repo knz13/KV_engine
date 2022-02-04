@@ -223,7 +223,7 @@ install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 install(DIRECTORY source/ DESTINATION include)                
 
 
-install(DIRECTORY vendor/ DESTINATION include)                
+install(DIRECTORY vendor DESTINATION include)                
 
 #adding dependencies
 
@@ -299,7 +299,7 @@ endforeach()
     target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/entt/src)
     
 
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/source)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/source/)
     
 
     target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor)
