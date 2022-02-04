@@ -222,6 +222,9 @@ install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 
 install(DIRECTORY source/ DESTINATION include)                
 
+
+install(DIRECTORY vendor/ DESTINATION include)                
+
 #adding dependencies
 
 foreach(X ${DEPS_TO_BUILD})
