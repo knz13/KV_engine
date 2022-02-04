@@ -195,8 +195,7 @@ endif()
 add_library(${PROJECT_NAME}
 
     #source files...
-    ${PROJECT_SOURCE_DIR}/main.cpp
-	${PROJECT_SOURCE_DIR}/source/window/window.cpp
+    ${PROJECT_SOURCE_DIR}/source/window/window.cpp
 	${PROJECT_SOURCE_DIR}/source/general/color.cpp
 	${PROJECT_SOURCE_DIR}/source/general/registry.cpp
 	${PROJECT_SOURCE_DIR}/source/general/registry_creates.cpp
