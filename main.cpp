@@ -1,11 +1,14 @@
 #include <iostream>
 #include "kv.h"
 
+
 int main(){
     WindowCreationProperties prop;
     prop.title = "Hey I'm a window!";
     Window& win = Registry::Create().MainWindow(prop);
     
+    
+
     Shader shader;
 
     shader.CreateNew()
@@ -46,7 +49,8 @@ int main(){
         .AddAttribute(vertices,false)
         .Generate();
 
-    va.CreateIndexBuffer().SetIndices(indices);
+    va.CreateIndexBuffer()
+        .SetIndices(indices);
 
     win.SetDrawingLoop([&](Window& window){
         shader.Bind();

@@ -10,17 +10,21 @@ public:
     ~Window();
 
     bool IsOpen();
-    void BeginDrawState();
-    void EndDrawState();
 
     void SetDrawingLoop(std::function<void(Window&)> windowFunc);
     void SetClosingCallback(std::function<void(Window&)>windowFunc);
 
     void SetClearColor(Color color);
 
+    const WindowCreationProperties& Properties();
     GLFWwindow* GetContextPointer();
 
 private:
+    void BeginDrawState();
+    void EndDrawState();
+
+    
+    WindowCreationProperties m_Properties;
     GLFWwindow* m_ContextPointer=nullptr;
     std::function<void(Window&)> m_DrawingLoop = [](Window& win){};
     std::function<void(Window&)> m_ClosingCallback = [](Window& win){};

@@ -5,6 +5,8 @@
 #include <memory>
 #include <unordered_map>
 #include "glm/glm.hpp"
+#include "glm/gtc/quaternion.hpp"
+#include "glm/gtx/quaternion.hpp"
 #define GLEW_STATIC
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
@@ -14,6 +16,7 @@
 #include "ryml.hpp"
 #include "ryml_std.hpp"
 #include "thread_pool.hpp"
+#include "entt/entt.hpp"
 #include "general/structures.h"
 #include "general/color.h"
 

@@ -169,6 +169,23 @@ if(NOT ${thread_pool_exists})
 endif()
                     
                     
+
+# repository download for entt...
+                    
+dir_exists(entt_exists ${PROJECT_SOURCE_DIR}/vendor/entt)
+
+if(NOT ${entt_exists})
+    FetchContent_Declare(ENTT
+    GIT_REPOSITORY https://github.com/skypjack/entt
+    GIT_TAG v3.9.0
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/entt
+    )
+
+    FetchContent_MakeAvailable(ENTT)
+
+endif()
+                    
+                    
 #finding packages...            
 
     find_package(OpenGL REQUIRED)
@@ -188,6 +205,7 @@ add_executable(${PROJECT_NAME}
 	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/vertex_array.cpp
 	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/index_buffer.cpp
 	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/shader.cpp
+	${PROJECT_SOURCE_DIR}/source/camera/camera.cpp
 )
         
 #setting c/cpp standard
@@ -264,6 +282,9 @@ endforeach()
     
 
     target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/thread_pool)
+    
+
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/entt/src)
     
 
     target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor)

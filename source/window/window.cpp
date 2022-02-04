@@ -1,6 +1,6 @@
 #include "window.h"
 
-Window::Window(WindowCreationProperties prop) {
+Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
     
     if(glfwInit() != GLFW_TRUE){
         DEBUG_ERROR("GLFW was not initiated!");
@@ -90,4 +90,8 @@ void Window::SetDrawingLoop(std::function<void(Window&)> windowFunc) {
 
 void Window::SetClearColor(Color color) {
     m_ClearColor = color;
+}
+
+const WindowCreationProperties& Window::Properties() {
+    return m_Properties;
 }
