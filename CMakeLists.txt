@@ -31,7 +31,7 @@ include(FetchContent)
 set(DEPS_TO_BUILD )
 
 #project name
-project("test_proj")
+project("kv")
         
         
             
