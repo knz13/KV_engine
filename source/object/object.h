@@ -6,8 +6,7 @@
 class Object {
 public:
     Transform transform;
-
-private:
     
-
+private:
+   
 };

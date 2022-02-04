@@ -191,8 +191,8 @@ endif()
     find_package(OpenGL REQUIRED)
 
 
-#creating executable
-add_executable(${PROJECT_NAME}
+#creating library
+add_library(${PROJECT_NAME}
 
     #source files...
     ${PROJECT_SOURCE_DIR}/main.cpp
@@ -206,6 +206,7 @@ add_executable(${PROJECT_NAME}
 	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/index_buffer.cpp
 	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/shader.cpp
 	${PROJECT_SOURCE_DIR}/source/camera/camera.cpp
+	${PROJECT_SOURCE_DIR}/source/object/object.cpp
 )
         
 #setting c/cpp standard
@@ -213,6 +214,15 @@ add_executable(${PROJECT_NAME}
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
         
+
+#installing library
+install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+
+#installing includes
+
+
+install(DIRECTORY source/ DESTINATION include)                
+
 #adding dependencies
 
 foreach(X ${DEPS_TO_BUILD})
@@ -287,8 +297,8 @@ endforeach()
     target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/entt/src)
     
 
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/source)
     
 
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/source)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor)
     
