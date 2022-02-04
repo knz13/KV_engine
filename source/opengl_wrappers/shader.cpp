@@ -39,8 +39,8 @@ void Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> 
             break;
         }
 
-        GLchar const* files[sources.size()];
-        GLint lengths[sources.size()];
+        std::vector<GLchar const*> files(sources.size());
+        std::vector<GLint> lengths(sources.size());
 
         int index = 0;
         for(auto& source : sources){
@@ -50,7 +50,7 @@ void Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> 
             index++;
         }
 
-        GL_CALL(glShaderSource(shaderID,index,files,lengths));
+        GL_CALL(glShaderSource(shaderID,index,files.data(),lengths.data()));
 
         if(!CompileShader(shaderID)){
             return;
