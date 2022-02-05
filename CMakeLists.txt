@@ -222,6 +222,25 @@ install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 
 install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
 
+
+#installing includes from dependencies...
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/imgui/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glfw/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glew/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/ryml/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/assimp/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glm/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/thread_pool/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/entt/src/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
+
 #adding dependencies
 
 foreach(X ${DEPS_TO_BUILD})

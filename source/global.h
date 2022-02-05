@@ -11,7 +11,7 @@
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 #include "imgui.h"
-#include "imgui/misc/cpp/imgui_stdlib.h"
+#include "misc/cpp/imgui_stdlib.h"
 #include "assimp/Importer.hpp"
 #include "ryml.hpp"
 #include "ryml_std.hpp"
