@@ -222,25 +222,6 @@ install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 
 install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
 
-
-#installing includes from dependencies...
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/imgui/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glfw/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glew/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/ryml/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/assimp/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glm/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/thread_pool/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/entt/src/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
-
 #adding dependencies
 
 foreach(X ${DEPS_TO_BUILD})
@@ -257,66 +238,66 @@ endforeach()
     #linking for glfw...
 
 
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
                 
 
     #linking for glew...
 
 
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
                 
 
     #linking for ryml...
 
 
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/ryml/lib/${CMAKE_STATIC_LIBRARY_PREFIX}c4core${CMAKE_STATIC_LIBRARY_SUFFIX})
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/ryml/lib/${CMAKE_STATIC_LIBRARY_PREFIX}c4core${CMAKE_STATIC_LIBRARY_SUFFIX})
                 
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/ryml/lib/${CMAKE_STATIC_LIBRARY_PREFIX}ryml${CMAKE_STATIC_LIBRARY_SUFFIX})
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/ryml/lib/${CMAKE_STATIC_LIBRARY_PREFIX}ryml${CMAKE_STATIC_LIBRARY_SUFFIX})
                 
 
     #linking for assimp...
 
 
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}assimp-vc142-mtd${CMAKE_STATIC_LIBRARY_SUFFIX})
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}assimp-vc142-mtd${CMAKE_STATIC_LIBRARY_SUFFIX})
                 
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
                 
 
     #linking for OpenGL...
 
 
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENGL_LIBRARIES})
                 
 
 #------------ include directories -------------
 
             
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/imgui)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/imgui)
     
 
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glfw/include)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glfw/include)
     
 
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glew/include)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glew/include)
     
 
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/ryml/include)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/ryml/include)
     
 
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/assimp/include)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/assimp/include)
     
 
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/glm)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glm)
     
 
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/thread_pool)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/thread_pool)
     
 
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor/entt/src)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/entt/src)
     
 
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/source/)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/source/)
     
 
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/vendor)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor)
     
