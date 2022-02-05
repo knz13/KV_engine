@@ -192,8 +192,8 @@ endif()
     find_package(OpenGL REQUIRED)
 
 
-#creating library
-add_library(${PROJECT_NAME}
+#creating executable
+add_executable(${PROJECT_NAME}
 
     #source files...
     ${PROJECT_SOURCE_DIR}/source/window/window.cpp
@@ -207,6 +207,7 @@ add_library(${PROJECT_NAME}
 	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/shader.cpp
 	${PROJECT_SOURCE_DIR}/source/camera/camera.cpp
 	${PROJECT_SOURCE_DIR}/source/object/object.cpp
+	${PROJECT_SOURCE_DIR}/main.cpp
 )
         
 #setting c/cpp standard
@@ -214,34 +215,6 @@ add_library(${PROJECT_NAME}
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
         
-
-#installing library
-install(TARGETS ${PROJECT_NAME} DESTINATION lib RUNTIME_DEPENDENCIES)
-
-#installing includes
-
-
-install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
-
-#installing includes from dependencies...
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/imgui/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glfw/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glew/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/ryml/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/assimp/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glm/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/thread_pool/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/entt/src/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
 #adding dependencies
 
 foreach(X ${DEPS_TO_BUILD})
@@ -316,7 +289,7 @@ endforeach()
     target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/entt/src)
     
 
-    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/source/)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/source)
     
 
     target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor)
