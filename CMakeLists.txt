@@ -32,7 +32,7 @@ include(FetchContent)
 set(DEPS_TO_BUILD )
 
 #project name
-project("KV")
+project("kv")
         
         
             
@@ -181,7 +181,7 @@ install(TARGETS ${PROJECT_NAME} DESTINATION lib RUNTIME_DEPENDENCIES)
 #installing includes
 
 
-install(DIRECTORY vendor DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
+install(DIRECTORY vendor/ DESTINATION vendor FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
 
 
 install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
@@ -190,6 +190,9 @@ install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTE
 
     install(FILES ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION lib)
 
+    install(FILES ${OpenGL_LIBRARIES} DESTINATION lib)
+
+    install(FILES OpenGL::GLU DESTINATION lib)
 
 #adding dependencies
 
