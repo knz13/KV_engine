@@ -190,10 +190,6 @@ install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTE
 
     install(FILES ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION lib)
 
-    install(FILES ${OpenGL_LIBRARIES} DESTINATION lib)
-
-    install(FILES OpenGL::GLU DESTINATION lib)
-
 #adding dependencies
 
 foreach(X ${DEPS_TO_BUILD})
