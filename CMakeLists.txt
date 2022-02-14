@@ -181,6 +181,9 @@ install(TARGETS ${PROJECT_NAME} DESTINATION lib RUNTIME_DEPENDENCIES)
 #installing includes
 
 
+install(DIRECTORY source DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
+
+
 #installing includes from dependencies...
 
     install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glm/glm/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
