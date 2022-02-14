@@ -40,23 +40,6 @@ project("KV")
             
             
 
-# repository download for thread_pool...
-                    
-dir_exists(thread_pool_exists ${PROJECT_SOURCE_DIR}/vendor/thread_pool)
-
-if(NOT ${thread_pool_exists})
-    FetchContent_Declare(THREAD_POOL
-    GIT_REPOSITORY https://github.com/bshoshany/thread-pool
-    GIT_TAG v2.0.0
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/thread_pool
-    )
-
-    FetchContent_MakeAvailable(THREAD_POOL)
-
-endif()
-                    
-                    
-
 # repository download for glm...
                     
 dir_exists(glm_exists ${PROJECT_SOURCE_DIR}/vendor/glm)
@@ -69,23 +52,6 @@ if(NOT ${glm_exists})
     )
 
     FetchContent_MakeAvailable(GLM)
-
-endif()
-                    
-                    
-
-# repository download for imgui...
-                    
-dir_exists(imgui_exists ${PROJECT_SOURCE_DIR}/vendor/imgui)
-
-if(NOT ${imgui_exists})
-    FetchContent_Declare(IMGUI
-    GIT_REPOSITORY https://github.com/ocornut/imgui
-    GIT_TAG v1.8.7
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui
-    )
-
-    FetchContent_MakeAvailable(IMGUI)
 
 endif()
                     
@@ -145,6 +111,40 @@ endif()
 
 
                     
+
+# repository download for thread_pool...
+                    
+dir_exists(thread_pool_exists ${PROJECT_SOURCE_DIR}/vendor/thread_pool)
+
+if(NOT ${thread_pool_exists})
+    FetchContent_Declare(THREAD_POOL
+    GIT_REPOSITORY https://github.com/bshoshany/thread-pool
+    GIT_TAG v1.9
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/thread_pool
+    )
+
+    FetchContent_MakeAvailable(THREAD_POOL)
+
+endif()
+                    
+                    
+
+# repository download for imgui...
+                    
+dir_exists(imgui_exists ${PROJECT_SOURCE_DIR}/vendor/imgui)
+
+if(NOT ${imgui_exists})
+    FetchContent_Declare(IMGUI
+    GIT_REPOSITORY https://github.com/ocornut/imgui
+    GIT_TAG v1.87
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui
+    )
+
+    FetchContent_MakeAvailable(IMGUI)
+
+endif()
+                    
+                    
 #finding packages...            
 
 find_package(OpenGL REQUIRED)
@@ -183,17 +183,17 @@ install(TARGETS ${PROJECT_NAME} DESTINATION lib RUNTIME_DEPENDENCIES)
 
 #installing includes from dependencies...
 
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/thread_pool/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
     install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glm/glm/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/imgui/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
 
     install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/entt/src/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
 
     install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glew/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
 
     install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glfw/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/thread_pool/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/imgui/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
 
 #adding dependencies
 
@@ -231,13 +231,7 @@ endforeach()
 #------------ include directories -------------
 
             
-    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/thread_pool)
-    
-
     target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glm/glm)
-    
-
-    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/imgui)
     
 
     target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/entt/src)
@@ -247,6 +241,12 @@ endforeach()
     
 
     target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glfw/include)
+    
+
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/thread_pool)
+    
+
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/imgui)
     
 
     target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor)
