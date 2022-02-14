@@ -181,7 +181,7 @@ install(TARGETS ${PROJECT_NAME} DESTINATION lib RUNTIME_DEPENDENCIES)
 #installing includes
 
 
-install(DIRECTORY vendor DESTINATION ../ FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
+install(DIRECTORY vendor/ DESTINATION vendor FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
 
 
 install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
