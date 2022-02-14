@@ -1,6 +1,6 @@
 #pragma once
 #include <functional>
-#include "glm.hpp"
+#include "../../vendor/glm/glm/glm.hpp"
 
 
 class Color {
