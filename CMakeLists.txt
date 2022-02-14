@@ -34,7 +34,7 @@ set(DEPS_TO_BUILD )
 #project name
 project("KV")
         
-
+        
             
 #-------------- external repositories ---------------
             
@@ -181,6 +181,9 @@ install(TARGETS ${PROJECT_NAME} DESTINATION lib RUNTIME_DEPENDENCIES)
 #installing includes
 
 
+install(DIRECTORY vendor DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
+
+
 install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
 
 #adding dependencies
@@ -240,5 +243,5 @@ endforeach()
     target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor)
     
 
-    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/source)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/source/)
     
