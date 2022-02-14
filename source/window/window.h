@@ -10,9 +10,11 @@ public:
     ~Window();
 
     bool IsOpen();
-
-    void SetDrawingLoop(std::function<void(Window&)> windowFunc);
-    void SetClosingCallback(std::function<void(Window&)>windowFunc);
+    
+    FunctionSink<void(Window&)> PreDrawingLoop();
+    FunctionSink<void(Window&)> DrawingLoop();
+    FunctionSink<void(Window&)> PostDrawingLoop();
+    FunctionSink<void(Window&)> Closing();
 
     void SetClearColor(Color color);
 
@@ -26,8 +28,11 @@ private:
     
     WindowCreationProperties m_Properties;
     GLFWwindow* m_ContextPointer=nullptr;
-    std::function<void(Window&)> m_DrawingLoop = [](Window& win){};
-    std::function<void(Window&)> m_ClosingCallback = [](Window& win){};
+
+    std::unordered_map<uint32_t,std::function<void(Window&)>> m_PreDrawingLoopFuncs;
+    std::unordered_map<uint32_t,std::function<void(Window&)>> m_DrawingLoopFuncs;
+    std::unordered_map<uint32_t,std::function<void(Window&)>> m_PostDrawingLoopFuncs;
+    std::unordered_map<uint32_t,std::function<void(Window&)>> m_ClosingCallbackFuncs;
     Color m_ClearColor = Color::Black;
     
 

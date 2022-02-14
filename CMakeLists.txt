@@ -32,7 +32,7 @@ include(FetchContent)
 set(DEPS_TO_BUILD )
 
 #project name
-project("kv")
+project("KV")
         
         
             
@@ -40,101 +40,21 @@ project("kv")
             
             
 
-# repository download for imgui...
+# repository download for thread_pool...
                     
-dir_exists(imgui_exists ${PROJECT_SOURCE_DIR}/vendor/imgui)
+dir_exists(thread_pool_exists ${PROJECT_SOURCE_DIR}/vendor/thread_pool)
 
-if(NOT ${imgui_exists})
-    FetchContent_Declare(IMGUI
-    GIT_REPOSITORY https://github.com/ocornut/imgui
-    GIT_TAG origin/master
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui
+if(NOT ${thread_pool_exists})
+    FetchContent_Declare(THREAD_POOL
+    GIT_REPOSITORY https://github.com/bshoshany/thread-pool
+    GIT_TAG v2.0.0
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/thread_pool
     )
 
-    FetchContent_MakeAvailable(IMGUI)
+    FetchContent_MakeAvailable(THREAD_POOL)
 
 endif()
                     
-                    
-
-# repository download for glfw...
-                    
-dir_exists(glfw_exists ${PROJECT_SOURCE_DIR}/vendor/glfw)
-
-if(NOT ${glfw_exists})
-    ExternalProject_Add(GLFW
-    GIT_REPOSITORY https://github.com/glfw/glfw
-    GIT_TAG 3.3.6
-    CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/glfw
-    BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX}
-    )
-
-    list(APPEND DEPS_TO_BUILD GLFW)
-
-endif()
-
-
-                    
-
-# repository download for glew...
-                    
-dir_exists(glew_exists ${PROJECT_SOURCE_DIR}/vendor/glew)
-
-if(NOT ${glew_exists})
-    ExternalProject_Add(GLEW
-    GIT_REPOSITORY https://github.com/Perlmint/glew-cmake
-    GIT_TAG glew-cmake-2.2.0
-    CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/glew
-    BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX}
-    )
-
-    list(APPEND DEPS_TO_BUILD GLEW)
-
-endif()
-
-
-                    
-
-# repository download for ryml...
-                    
-dir_exists(ryml_exists ${PROJECT_SOURCE_DIR}/vendor/ryml)
-
-if(NOT ${ryml_exists})
-    ExternalProject_Add(RYML
-    GIT_REPOSITORY https://github.com/biojppm/rapidyaml
-    GIT_TAG v0.3.0
-    CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/ryml
-    BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/ryml/lib/${CMAKE_STATIC_LIBRARY_PREFIX}c4core${CMAKE_STATIC_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/vendor/ryml/lib/${CMAKE_STATIC_LIBRARY_PREFIX}ryml${CMAKE_STATIC_LIBRARY_SUFFIX}
-    )
-
-    list(APPEND DEPS_TO_BUILD RYML)
-
-endif()
-
-
-                    
-
-# repository download for assimp...
-                    
-dir_exists(assimp_exists ${PROJECT_SOURCE_DIR}/vendor/assimp)
-
-if(NOT ${assimp_exists})
-    ExternalProject_Add(ASSIMP
-    GIT_REPOSITORY https://github.com/assimp/assimp
-    GIT_TAG v5.1.6
-    CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/assimp
-                -DASSIMP_BUILD_TESTS=OFF
-                        
-                -DASSIMP_INSTALL_PDB=OFF
-                        
-    BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}assimp-vc142-mtd${CMAKE_STATIC_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX}
-    )
-
-    list(APPEND DEPS_TO_BUILD ASSIMP)
-
-endif()
-
-
                     
 
 # repository download for glm...
@@ -154,18 +74,18 @@ endif()
                     
                     
 
-# repository download for thread_pool...
+# repository download for imgui...
                     
-dir_exists(thread_pool_exists ${PROJECT_SOURCE_DIR}/vendor/thread_pool)
+dir_exists(imgui_exists ${PROJECT_SOURCE_DIR}/vendor/imgui)
 
-if(NOT ${thread_pool_exists})
-    FetchContent_Declare(THREAD_POOL
-    GIT_REPOSITORY https://github.com/bshoshany/thread-pool
-    GIT_TAG v2.0.0
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/thread_pool
+if(NOT ${imgui_exists})
+    FetchContent_Declare(IMGUI
+    GIT_REPOSITORY https://github.com/ocornut/imgui
+    GIT_TAG v1.8.7
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui
     )
 
-    FetchContent_MakeAvailable(THREAD_POOL)
+    FetchContent_MakeAvailable(IMGUI)
 
 endif()
                     
@@ -187,27 +107,66 @@ if(NOT ${entt_exists})
 endif()
                     
                     
+
+# repository download for glew...
+                    
+dir_exists(glew_exists ${PROJECT_SOURCE_DIR}/vendor/glew)
+
+if(NOT ${glew_exists})
+    ExternalProject_Add(GLEW
+    GIT_REPOSITORY https://github.com/Perlmint/glew-cmake
+    GIT_TAG glew-cmake-2.2.0
+    CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/glew
+    BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX}
+    )
+
+    list(APPEND DEPS_TO_BUILD GLEW)
+
+endif()
+
+
+                    
+
+# repository download for glfw...
+                    
+dir_exists(glfw_exists ${PROJECT_SOURCE_DIR}/vendor/glfw)
+
+if(NOT ${glfw_exists})
+    ExternalProject_Add(GLFW
+    GIT_REPOSITORY https://github.com/glfw/glfw
+    GIT_TAG 3.3.6
+    CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/glfw
+    BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX}
+    )
+
+    list(APPEND DEPS_TO_BUILD GLFW)
+
+endif()
+
+
+                    
 #finding packages...            
 
-    find_package(OpenGL REQUIRED)
+find_package(OpenGL REQUIRED)
 
 
-#creating executable
-add_executable(${PROJECT_NAME}
+#creating library
+add_library(${PROJECT_NAME}
 
     #source files...
-    ${PROJECT_SOURCE_DIR}/source/window/window.cpp
+    ${PROJECT_SOURCE_DIR}/main.cpp
+	${PROJECT_SOURCE_DIR}/source/window/window.cpp
+	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/index_buffer.cpp
+	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/shader.cpp
+	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/vertex_array.cpp
+	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/vertex_buffer.cpp
+	${PROJECT_SOURCE_DIR}/source/object/object.cpp
 	${PROJECT_SOURCE_DIR}/source/general/color.cpp
 	${PROJECT_SOURCE_DIR}/source/general/registry.cpp
 	${PROJECT_SOURCE_DIR}/source/general/registry_creates.cpp
+	${PROJECT_SOURCE_DIR}/source/general/registry_deleters.cpp
 	${PROJECT_SOURCE_DIR}/source/general/registry_getters.cpp
-	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/vertex_buffer.cpp
-	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/vertex_array.cpp
-	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/index_buffer.cpp
-	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/shader.cpp
 	${PROJECT_SOURCE_DIR}/source/camera/camera.cpp
-	${PROJECT_SOURCE_DIR}/source/object/object.cpp
-	${PROJECT_SOURCE_DIR}/main.cpp
 )
         
 #setting c/cpp standard
@@ -215,6 +174,27 @@ add_executable(${PROJECT_NAME}
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
         
+
+#installing library
+install(TARGETS ${PROJECT_NAME} DESTINATION lib RUNTIME_DEPENDENCIES)
+
+#installing includes
+
+
+#installing includes from dependencies...
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/thread_pool/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glm/glm/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/imgui/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/entt/src/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glew/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
+
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/vendor/glfw/include/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
+
 #adding dependencies
 
 foreach(X ${DEPS_TO_BUILD})
@@ -228,69 +208,49 @@ endforeach()
 # ------------- linking libraries -------------
             
 
-    #linking for glfw...
-
-
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
-                
-
     #linking for glew...
 
 
     target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
                 
 
-    #linking for ryml...
+    #linking for glfw...
 
 
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/ryml/lib/${CMAKE_STATIC_LIBRARY_PREFIX}c4core${CMAKE_STATIC_LIBRARY_SUFFIX})
-                
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/ryml/lib/${CMAKE_STATIC_LIBRARY_PREFIX}ryml${CMAKE_STATIC_LIBRARY_SUFFIX})
-                
-
-    #linking for assimp...
-
-
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}assimp-vc142-mtd${CMAKE_STATIC_LIBRARY_SUFFIX})
-                
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
                 
 
     #linking for OpenGL...
 
 
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENGL_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenGL_LIBRARIES})
+                
+    target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GLU)
                 
 
 #------------ include directories -------------
 
             
-    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/imgui)
-    
-
-    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glfw/include)
-    
-
-    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glew/include)
-    
-
-    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/ryml/include)
-    
-
-    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/assimp/include)
-    
-
-    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glm)
-    
-
     target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/thread_pool)
+    
+
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glm/glm)
+    
+
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/imgui)
     
 
     target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/entt/src)
     
 
-    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/source)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glew/include)
+    
+
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glfw/include)
     
 
     target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor)
+    
+
+    target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/source)
     

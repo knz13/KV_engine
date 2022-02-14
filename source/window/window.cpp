@@ -61,6 +61,9 @@ Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
 }
 
 Window::~Window() {
+    for(auto& func : m_ClosingCallbackFuncs){
+        func.second(*this);
+    }
     glfwDestroyWindow(m_ContextPointer);
 }
 
@@ -78,15 +81,14 @@ void Window::EndDrawState() {
 
 void Window::BeginDrawState() {
     glfwPollEvents();
+    glfwGetWindowSize(m_ContextPointer, &m_Properties.width, &m_Properties.height);
 
     glm::vec3 color = m_ClearColor.Normalized();
     GL_CALL(glClearColor(color.x,color.y,color.z,1.0f));
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
 }
 
-void Window::SetDrawingLoop(std::function<void(Window&)> windowFunc) {
-    m_DrawingLoop = windowFunc;
-}
+
 
 void Window::SetClearColor(Color color) {
     m_ClearColor = color;
@@ -94,4 +96,20 @@ void Window::SetClearColor(Color color) {
 
 const WindowCreationProperties& Window::Properties() {
     return m_Properties;
+}
+
+FunctionSink<void(Window&)> Window::PostDrawingLoop() {
+    return FunctionSink<void(Window&)>(m_PostDrawingLoopFuncs);
+}
+
+FunctionSink<void(Window&)> Window::DrawingLoop() {
+    return FunctionSink<void(Window&)>(m_DrawingLoopFuncs);
+}
+
+FunctionSink<void(Window&)> Window::PreDrawingLoop() {
+    return FunctionSink<void(Window&)>(m_PreDrawingLoopFuncs);
+}
+
+FunctionSink<void(Window&)> Window::Closing() {
+    return FunctionSink<void(Window&)>(m_ClosingCallbackFuncs);
 }

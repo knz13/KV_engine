@@ -52,7 +52,7 @@ int main(){
     va.CreateIndexBuffer()
         .SetIndices(indices);
 
-    win.SetDrawingLoop([&](Window& window){
+    win.DrawingLoop().Connect([&](Window& window){
         shader.Bind();
         va.Bind();
         if(!va.HasIndexBuffer()){

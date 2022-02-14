@@ -5,7 +5,7 @@
 #include "window/window.h"
 #include <future>
 
-
+float Registry::m_DeltaTime;
 std::unique_ptr<Window> Registry::m_MainWindow;
 entt::registry Registry::m_MainRegistry;
 std::unordered_map<std::string,std::unique_ptr<Window>> Registry::m_SubWindows;
@@ -27,6 +27,10 @@ RegistryCreates Registry::Create() {
     return RegistryCreates();
 }
 void Registry::MainLoop() {
+
+    static double currentTime = 0;
+    static double oldTime = 0;
+
     if(!m_MainWindow){
         DEBUG_ERROR("Calling main window function without any window defined!");
         return;
@@ -42,11 +46,24 @@ void Registry::MainLoop() {
     while(m_MainWindow.get()->IsOpen()){
 
 
+        currentTime = glfwGetTime();
+        m_DeltaTime = static_cast<float>(currentTime - oldTime);
+
+        oldTime = currentTime;
+        
+        
         glfwMakeContextCurrent(m_MainWindow.get()->m_ContextPointer);
         m_MainWindow.get()->BeginDrawState();
         
-        m_MainWindow.get()->m_DrawingLoop(*m_MainWindow.get());
-        
+        for(auto& func : m_MainWindow.get()->m_PreDrawingLoopFuncs){
+            func.second(*m_MainWindow.get());
+        }
+        for(auto& func : m_MainWindow.get()->m_DrawingLoopFuncs){
+            func.second(*m_MainWindow.get());
+        }
+        for(auto& func : m_MainWindow.get()->m_PostDrawingLoopFuncs){
+            func.second(*m_MainWindow.get());
+        }
         m_MainWindow.get()->EndDrawState();
 
         std::unordered_map<std::string,std::unique_ptr<Window>>::iterator it = m_SubWindows.begin();
@@ -54,7 +71,15 @@ void Registry::MainLoop() {
             if(it->second.get()->IsOpen()){
                 glfwMakeContextCurrent(it->second.get()->m_ContextPointer);
                 it->second.get()->BeginDrawState();
-                it->second.get()->m_DrawingLoop(*it->second.get());
+                for(auto& func : it->second.get()->m_PreDrawingLoopFuncs){
+                    func.second(*it->second.get());
+                }
+                for(auto& func : it->second.get()->m_DrawingLoopFuncs){
+                    func.second(*it->second.get());
+                }
+                for(auto& func : it->second.get()->m_PostDrawingLoopFuncs){
+                    func.second(*it->second.get());
+                }
                 it->second.get()->EndDrawState();
                 it++;
             }
@@ -62,8 +87,6 @@ void Registry::MainLoop() {
                 it = m_SubWindows.erase(it);
             }
         }    
-
-
     }
 
 }
