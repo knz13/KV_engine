@@ -34,8 +34,7 @@ set(DEPS_TO_BUILD )
 #project name
 project("KV")
         
-set(CMAKE_INSTALL_PREFIX ${PROJECT_BINARY_DIR}/hello)
-        
+
             
 #-------------- external repositories ---------------
             
