@@ -24,7 +24,7 @@ public:
         return *this;
     };
 
-    template<>
+    
     VertexBuffer& AddAttribute(std::vector<float>& vec,bool normalized){
         unsigned int count = vec.size()/m_AttributeSize;
 
@@ -37,7 +37,7 @@ public:
         return *this;
     };
 
-    template<>
+    
     VertexBuffer& AddAttribute(std::vector<int>& vec,bool normalized){
         unsigned int count = vec.size()/m_AttributeSize;
 
@@ -50,7 +50,7 @@ public:
         return *this;
     };
     
-    template<>
+    
     VertexBuffer& AddAttribute(std::vector<unsigned int>& vec,bool normalized){
         unsigned int count = vec.size()/m_AttributeSize;
 
