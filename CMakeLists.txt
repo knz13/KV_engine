@@ -74,25 +74,6 @@ endif()
                     
                     
 
-# repository download for glew...
-                    
-dir_exists(glew_exists ${PROJECT_SOURCE_DIR}/vendor/glew)
-
-if(NOT ${glew_exists})
-    ExternalProject_Add(GLEW
-    GIT_REPOSITORY https://github.com/Perlmint/glew-cmake
-    GIT_TAG glew-cmake-2.2.0
-    CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/glew
-    BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX}
-    )
-
-    list(APPEND DEPS_TO_BUILD GLEW)
-
-endif()
-
-
-                    
-
 # repository download for glfw...
                     
 dir_exists(glfw_exists ${PROJECT_SOURCE_DIR}/vendor/glfw)
@@ -102,6 +83,7 @@ if(NOT ${glfw_exists})
     GIT_REPOSITORY https://github.com/glfw/glfw
     GIT_TAG 3.3.6
     CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/glfw
+                -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX}
     )
 
@@ -144,6 +126,30 @@ if(NOT ${imgui_exists})
 
 endif()
                     
+                    
+
+# repository download for glew...
+                    
+dir_exists(glew_exists ${PROJECT_SOURCE_DIR}/vendor/glew)
+
+if(NOT ${glew_exists})
+    ExternalProject_Add(GLEW
+    GIT_REPOSITORY https://github.com/Perlmint/glew-cmake
+    GIT_TAG glew-cmake-2.2.0
+    CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/glew
+                -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+                -Dglew-cmake_BUILD_SHARED=OFF
+                        
+                -DONLY_LIBS=ON
+                        
+    BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX}
+    )
+
+    list(APPEND DEPS_TO_BUILD GLEW)
+
+endif()
+
+
                     
 #finding packages...            
 
@@ -189,9 +195,9 @@ install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTE
 #installing libraries from dependencies...
 
 
-    install(FILES ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION lib)
-
     install(FILES ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION lib)
+
+    install(FILES ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION lib)
 
 #adding dependencies
 
@@ -206,16 +212,16 @@ endforeach()
 # ------------- linking libraries -------------
             
 
-    #linking for glew...
-
-
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
-                
-
     #linking for glfw...
 
 
     target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
+                
+
+    #linking for glew...
+
+
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
                 
 
     #linking for OpenGL...
