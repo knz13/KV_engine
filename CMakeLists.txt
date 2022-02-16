@@ -78,7 +78,7 @@ endif()
                     
 dir_exists(glfw_exists ${PROJECT_SOURCE_DIR}/vendor/glfw)
 
-if(NOT ${glfw_exists})
+if(NOT ${glfw_exists} OR NOT ${${PROJECT_NAME}_BUILD_TYPE} STREQUAL ${CMAKE_BUILD_TYPE})
     ExternalProject_Add(GLFW
     GIT_REPOSITORY https://github.com/glfw/glfw
     GIT_TAG 3.3.6
@@ -132,7 +132,7 @@ endif()
                     
 dir_exists(glew_exists ${PROJECT_SOURCE_DIR}/vendor/glew)
 
-if(NOT ${glew_exists})
+if(NOT ${glew_exists} OR NOT ${${PROJECT_NAME}_BUILD_TYPE} STREQUAL ${CMAKE_BUILD_TYPE})
     ExternalProject_Add(GLEW
     GIT_REPOSITORY https://github.com/Perlmint/glew-cmake
     GIT_TAG glew-cmake-2.2.0
@@ -240,3 +240,9 @@ endforeach()
 
     target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/source/)
     
+
+
+# cacheing the build type
+
+set(${PROJECT_NAME}_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INTERNAL "")
+        
