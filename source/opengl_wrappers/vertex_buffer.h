@@ -18,12 +18,6 @@ public:
     
     void CreateNew(int numberOfElements);
 
-    template<typename T>
-    VertexBuffer& AddAttribute(std::vector<T>& vec,bool normalized=false) {
-        static_assert(false);
-        return *this;
-    };
-
     
     VertexBuffer& AddAttribute(std::vector<float>& vec,bool normalized){
         unsigned int count = vec.size()/m_AttributeSize;
