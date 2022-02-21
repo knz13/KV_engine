@@ -24,7 +24,6 @@ public:
 
 private:
     static float m_DeltaTime;
-    static entt::registry m_MainRegistry;
     static std::unique_ptr<Window> m_MainWindow;
     static std::unordered_map<std::string,std::unique_ptr<Window>> m_SubWindows;
     

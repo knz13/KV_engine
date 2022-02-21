@@ -10,10 +10,8 @@
 #define GLEW_STATIC
 #include "../vendor/glew/include/GL/glew.h"
 #include "../vendor/glfw/include/GLFW/glfw3.h"
-#include "../vendor/imgui/imgui.h"
-#include "../vendor/imgui/misc/cpp/imgui_stdlib.h"
 #include "../vendor/thread_pool/thread_pool.hpp"
-#include "../vendor/entt/single_include/entt/entt.hpp"
+
 #include "general/structures.h"
 #include "general/color.h"
 

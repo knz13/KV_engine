@@ -7,7 +7,6 @@
 
 float Registry::m_DeltaTime;
 std::unique_ptr<Window> Registry::m_MainWindow;
-entt::registry Registry::m_MainRegistry;
 std::unordered_map<std::string,std::unique_ptr<Window>> Registry::m_SubWindows;
 
 template<typename T>

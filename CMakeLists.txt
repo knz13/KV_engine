@@ -57,23 +57,6 @@ endif()
                     
                     
 
-# repository download for entt...
-                    
-dir_exists(entt_exists ${PROJECT_SOURCE_DIR}/vendor/entt)
-
-if(NOT ${entt_exists})
-    FetchContent_Declare(ENTT
-    GIT_REPOSITORY https://github.com/skypjack/entt
-    GIT_TAG v3.9.0
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/entt
-    )
-
-    FetchContent_MakeAvailable(ENTT)
-
-endif()
-                    
-                    
-
 # repository download for glfw...
                     
 dir_exists(glfw_exists ${PROJECT_SOURCE_DIR}/vendor/glfw)
@@ -106,23 +89,6 @@ if(NOT ${thread_pool_exists})
     )
 
     FetchContent_MakeAvailable(THREAD_POOL)
-
-endif()
-                    
-                    
-
-# repository download for imgui...
-                    
-dir_exists(imgui_exists ${PROJECT_SOURCE_DIR}/vendor/imgui)
-
-if(NOT ${imgui_exists})
-    FetchContent_Declare(IMGUI
-    GIT_REPOSITORY https://github.com/ocornut/imgui
-    GIT_TAG v1.87
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui
-    )
-
-    FetchContent_MakeAvailable(IMGUI)
 
 endif()
                     
@@ -166,7 +132,6 @@ add_library(${PROJECT_NAME}
 	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/shader.cpp
 	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/vertex_array.cpp
 	${PROJECT_SOURCE_DIR}/source/opengl_wrappers/vertex_buffer.cpp
-	${PROJECT_SOURCE_DIR}/source/object/object.cpp
 	${PROJECT_SOURCE_DIR}/source/general/color.cpp
 	${PROJECT_SOURCE_DIR}/source/general/registry.cpp
 	${PROJECT_SOURCE_DIR}/source/general/registry_creates.cpp
