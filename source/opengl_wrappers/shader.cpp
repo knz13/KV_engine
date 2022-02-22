@@ -23,7 +23,7 @@ void Shader::Unbind() {
 
 bool Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> sources) {
     if(m_AlreadyCreatedProgram){
-        m_ID = std::shared_ptr<unsigned int>();
+        m_ID.reset();
         m_AlreadyCreatedProgram = false;
     }
     
@@ -149,7 +149,6 @@ bool Shader::LinkShader() {
 
         DEBUG_LOG("Shader linking error: " << errorStr);
         
-        m_ID.reset();
         
         
         for(auto id : m_CompiledShadersCache){
@@ -157,6 +156,7 @@ bool Shader::LinkShader() {
             GL_CALL(glDeleteShader(id));
         }
 
+        m_ID.reset();
         m_CompiledShadersCache.clear();
         
         return false;
