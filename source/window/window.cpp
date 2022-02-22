@@ -94,7 +94,7 @@ void Window::SetClearColor(Color color) {
     m_ClearColor = color;
 }
 
-const WindowCreationProperties& Window::Properties() {
+const WindowCreationProperties& Window::Properties() const {
     return m_Properties;
 }
 

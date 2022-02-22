@@ -18,7 +18,7 @@ public:
 
     void SetClearColor(Color color);
 
-    const WindowCreationProperties& Properties();
+    const WindowCreationProperties& Properties() const;
     GLFWwindow* GetContextPointer();
 
 private:
