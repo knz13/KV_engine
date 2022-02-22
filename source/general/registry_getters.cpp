@@ -43,7 +43,7 @@ bool RegistryGetters::CachedShader(std::string relativeFilePath, Shader& shader)
     }
     
     if(!std::filesystem::exists(relativeFilePath)){
-        LOG("Could not load shader at path " + std::filesystem::absolute(relativeFilePath).string());
+        DEBUG_LOG("Could not load shader at path " + std::filesystem::absolute(relativeFilePath).string());
         return false;
     }
     std::vector<std::pair<ShaderType,std::string>> sources;
