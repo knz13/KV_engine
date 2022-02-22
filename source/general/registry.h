@@ -5,7 +5,7 @@
 #include "registry_creates.h"
 #include "registry_deleters.h"
 
-
+class Shader;
 class Registry {
 public:
 
@@ -26,7 +26,9 @@ private:
     static float m_DeltaTime;
     static std::unique_ptr<Window> m_MainWindow;
     static std::unordered_map<std::string,std::unique_ptr<Window>> m_SubWindows;
-    
+    static std::unordered_map<std::string,Shader> m_Shaders;
+
+
     friend class RegistryCreates;
     friend class RegistryGetters;
     friend class RegistrySetters;

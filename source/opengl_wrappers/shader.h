@@ -6,7 +6,7 @@ struct ShaderCreationProperties {
     ShaderCreationProperties(Shader& master);
 
     ShaderCreationProperties& AddShader(ShaderType type,std::string source);
-    void Generate();
+    bool Generate();
 
 private:
     Shader* m_Master;
@@ -33,14 +33,14 @@ public:
 
 private:
     
-    void SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> source);
+    bool SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> source);
     bool CompileShader(unsigned int shaderID);
     bool LinkShader();
 
 
 
     std::vector<unsigned int> m_CompiledShadersCache;
-    std::unique_ptr<unsigned int,std::function<void(unsigned int*)>> m_ID;
+    std::shared_ptr<unsigned int> m_ID;
 
     friend struct ShaderCreationProperties;
 };

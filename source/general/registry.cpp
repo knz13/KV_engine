@@ -1,4 +1,5 @@
 #include "registry.h"
+#include "kv.h"
 #include "registry_creates.h"
 #include "registry_getters.h"
 #include "registry_setters.h"
@@ -6,6 +7,7 @@
 #include <future>
 
 float Registry::m_DeltaTime;
+std::unordered_map<std::string,Shader> Registry::m_Shaders;
 std::unique_ptr<Window> Registry::m_MainWindow;
 std::unordered_map<std::string,std::unique_ptr<Window>> Registry::m_SubWindows;
 

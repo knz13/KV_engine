@@ -21,7 +21,7 @@ void Shader::Unbind() {
 
 
 
-void Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> sources) {
+bool Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> sources) {
     
 
     for(auto& shader : sources){
@@ -53,15 +53,18 @@ void Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> 
         GL_CALL(glShaderSource(shaderID,index,files.data(),lengths.data()));
 
         if(!CompileShader(shaderID)){
-            return;
+            return false;
         } 
         m_CompiledShadersCache.push_back(shaderID);
     }
 
     if(!LinkShader()){
-        return;
+        return false;
     };
 
+    m_CompiledShadersCache.clear();
+
+    return true;
 
 }
 bool Shader::CompileShader(unsigned int shaderID) {
@@ -100,7 +103,7 @@ bool Shader::CompileShader(unsigned int shaderID) {
             GL_CALL(glDeleteProgram(*id));
         };
 
-        m_ID = std::unique_ptr<unsigned int,decltype(deleter)>(new unsigned int(0),deleter);
+        m_ID = std::shared_ptr<unsigned int>(new unsigned int(0),deleter);
     }
 
     GL_CALL(*m_ID.get() = glCreateProgram());
@@ -124,6 +127,12 @@ bool Shader::LinkShader() {
         std::vector<GLchar> infoLog(maxLength);
         glGetProgramInfoLog(*m_ID.get(), maxLength, &maxLength, &infoLog[0]);
         
+        std::string errorStr;
+        for(auto& character : infoLog){
+            errorStr += character;
+        }
+
+        LOG("Shader linking error: " << errorStr);
         
         m_ID.reset();
         
@@ -132,6 +141,8 @@ bool Shader::LinkShader() {
             GL_CALL(glDetachShader(*m_ID.get(),id));
             GL_CALL(glDeleteShader(id));
         }
+
+        m_CompiledShadersCache.clear();
         
         return false;
         
@@ -156,8 +167,8 @@ ShaderCreationProperties Shader::CreateNew() {
     return ShaderCreationProperties(*this);
 }   
 
-void ShaderCreationProperties::Generate() {
-    m_Master->SetShaders(m_Shaders);
+bool ShaderCreationProperties::Generate() {
+    return m_Master->SetShaders(m_Shaders);
 }
 
 ShaderCreationProperties::ShaderCreationProperties(Shader& master) {
@@ -220,6 +231,6 @@ bool Shader::SetUniformMat4f(const string& name, const glm::mat4& mat) {
         this->Unbind();
         return false;
     }
-    GL_CALL(glUniformMatrix4fv(location,1,GL_FALSE,glm::value_ptr(mat4)));
+    GL_CALL(glUniformMatrix4fv(location,1,GL_FALSE,glm::value_ptr(mat)));
     this->Unbind();
 }

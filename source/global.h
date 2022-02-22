@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 #include <future>
 #include <optional>
 #include <memory>
@@ -11,7 +12,7 @@
 #include "../vendor/glew/include/GL/glew.h"
 #include "../vendor/glfw/include/GLFW/glfw3.h"
 #include "../vendor/thread_pool/thread_pool.hpp"
-#include "../vendor/glm/gtc/type_ptr.h"
+#include "../vendor/glm/glm/gtc/type_ptr.hpp"
 #include "general/structures.h"
 #include "general/color.h"
 
@@ -74,3 +75,18 @@ static bool GetGLError(int line,std::string file){
 #endif
 
 
+static std::string LoadFileContents(std::string fileName) {
+    std::string fileContents = "";
+
+    ifstream stream(fileName);
+
+    std::string line;
+    while(getline(stream,line)){
+        fileContents += line;
+    }
+
+    return fileContents;
+    
+
+
+}

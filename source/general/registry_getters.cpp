@@ -1,6 +1,8 @@
 #include "registry_getters.h"
+#include "kv.h"
 #include "registry.h"
 #include "window/window.h"
+#include <filesystem>
 
 Window& RegistryGetters::MainWindow() {
     if(Registry::m_MainWindow){
@@ -32,4 +34,30 @@ std::unordered_map<std::string,std::unique_ptr<Window>>& RegistryGetters::SubWin
 
 float RegistryGetters::DeltaTime() {
     return Registry::m_DeltaTime;
+}
+
+bool RegistryGetters::CachedShader(std::string relativeFilePath, Shader& shader) {
+    if(Registry::m_Shaders.find(relativeFilePath) != Registry::m_Shaders.end()){
+        shader = Registry::m_Shaders[relativeFilePath];
+        return true;
+    }
+    
+    std::vector<std::pair<ShaderType,std::string>> sources;
+    for(auto file : std::filesystem::directory_iterator(relativeFilePath)){
+        std::string fileName = file.path().filename().string();
+
+        if(fileName.ends_with("vertex")){
+            std::string source = LoadFileContents(std::filesystem::absolute(relativeFilePath).string());
+            sources.push_back(std::make_pair(ShaderType::Vertex,source));
+        }
+    }
+
+    ShaderCreationProperties prop = shader.CreateNew();
+    for(auto& [type,source] : sources){
+        prop.AddShader(type,source);
+    }
+
+    return prop.Generate();
+
+
 }
