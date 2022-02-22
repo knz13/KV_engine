@@ -53,6 +53,7 @@ void VertexBuffer::Generate() {
         GL_CALL(glVertexAttribPointer(index,attribute.count,attribute.type,attribute.normalized? GL_TRUE:GL_FALSE,attribute.count*GL_SIZEOF(attribute.type),(const void*)offset));
         GL_CALL(glEnableVertexAttribArray(index));
         offset += attribute.offsetSize;
+        index++;
     }
 
     m_AttributeTempMemory.clear();
