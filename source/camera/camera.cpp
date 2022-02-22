@@ -15,13 +15,13 @@ void Camera::SetDirection(float x, float y, float z) {
 }
 
 void Camera::Rotate(float pitch, float yaw, float roll) {
-    glm::quat rotation(glm::vec3(pitch,yaw,roll));
+    glm::quat rotation(glm::vec3(glm::radians(pitch),glm::radians(yaw),glm::radians(roll)));
 
     m_Rotation += rotation;
 }
 
 void Camera::SetRotation(float pitch, float yaw, float roll) {
-    m_Rotation = glm::quat(glm::vec3(pitch,yaw,roll));
+    m_Rotation = glm::quat(glm::vec3(glm::radians(pitch),glm::radians(yaw),glm::radians(roll)));
 }
 
 void Camera::Move(float x, float y, float z) {
