@@ -17,6 +17,7 @@ public:
     void Move(float x,float y,float z);
     void SetPosition(float x,float y,float z);
     
+    glm::vec3 GetRotation();
     const glm::vec3& GetPosition();
     glm::mat4 GetViewProjection();
 

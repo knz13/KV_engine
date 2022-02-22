@@ -45,3 +45,7 @@ glm::mat4 Camera::GetViewProjection() {
 Camera::Camera(const Window& win) : m_CurrentWindow(win){
     
 }
+
+glm::vec3 Camera::GetRotation() {
+    return glm::eulerAngles(m_Rotation);
+}
