@@ -16,5 +16,8 @@ public:
 
 private:
     VertexArray& m_Master;
+    unsigned int m_Count;
     std::shared_ptr<unsigned int> m_ID;
+
+    friend class VertexArray;
 };

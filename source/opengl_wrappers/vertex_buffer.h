@@ -64,7 +64,7 @@ public:
 
 private:
 
-
+    unsigned int numberOfElements = 0;
     VertexArray& m_Master;
     int m_AttributeSize=-1;
     std::vector<VertexBufferAttribute> m_AttributeTempMemory;

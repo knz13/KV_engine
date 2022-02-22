@@ -45,3 +45,12 @@ IndexBuffer& VertexArray::CreateIndexBuffer() {
 bool VertexArray::HasIndexBuffer() {
     return m_IB.operator bool();
 }
+
+unsigned int VertexArray::GetDrawCount() {
+    if(this->HasIndexBuffer()){
+        return m_IB.get()->m_Count;
+    }
+    else {
+        return m_VBO.get()->numberOfElements;
+    }
+}

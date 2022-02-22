@@ -14,6 +14,8 @@ void IndexBuffer::SetIndices(std::vector<unsigned int> indices) {
     this->Bind();
     GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices.size()*sizeof(unsigned int),indices.data(),GL_STATIC_DRAW));
     this->Unbind();
+
+    m_Count = indices.size();
 }
 
 
