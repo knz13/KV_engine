@@ -38,7 +38,7 @@ private:
     bool LinkShader();
 
 
-
+    bool m_AlreadyCreatedProgram = false;
     std::vector<unsigned int> m_CompiledShadersCache;
     std::shared_ptr<unsigned int> m_ID;
 

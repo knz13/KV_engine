@@ -22,6 +22,10 @@ void Shader::Unbind() {
 
 
 bool Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> sources) {
+    if(m_AlreadyCreatedProgram){
+        m_ID = std::shared_ptr<unsigned int>();
+        m_AlreadyCreatedProgram = false;
+    }
     
     if(sources.size() == 0){
         DEBUG_LOG("No sources were provided so shader.");
@@ -105,17 +109,13 @@ bool Shader::CompileShader(unsigned int shaderID,std::string shaderTypeName) {
 
     }
 
-    //TODO: test if changing the m_ID, it calls the destructor
-    if(m_ID){
-        GL_CALL(glDeleteProgram(*m_ID.get()));
-        
-    }
-    if(!m_ID){
+    if(!m_ID || !m_AlreadyCreatedProgram){
         auto deleter = [](unsigned int* id){
             GL_CALL(glDeleteProgram(*id));
         };
 
         m_ID = std::shared_ptr<unsigned int>(new unsigned int(0),deleter);
+        m_AlreadyCreatedProgram = true;
     }
 
     GL_CALL(*m_ID.get() = glCreateProgram());
