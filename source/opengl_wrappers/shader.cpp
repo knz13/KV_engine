@@ -108,17 +108,20 @@ bool Shader::CompileShader(unsigned int shaderID,std::string shaderTypeName) {
         return false;
 
     }
+    
 
-    if(!m_ID || !m_AlreadyCreatedProgram){
+    if(!m_ID){
         auto deleter = [](unsigned int* id){
             GL_CALL(glDeleteProgram(*id));
         };
 
         m_ID = std::shared_ptr<unsigned int>(new unsigned int(0),deleter);
+    }
+    if(!m_AlreadyCreatedProgram){
+
+        GL_CALL(*m_ID.get() = glCreateProgram());
         m_AlreadyCreatedProgram = true;
     }
-
-    GL_CALL(*m_ID.get() = glCreateProgram());
 
     GL_CALL(glAttachShader(*m_ID.get(),shaderID));
 
