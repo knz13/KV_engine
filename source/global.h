@@ -11,7 +11,7 @@
 #include "../vendor/glew/include/GL/glew.h"
 #include "../vendor/glfw/include/GLFW/glfw3.h"
 #include "../vendor/thread_pool/thread_pool.hpp"
-
+#include "../vendor/glm/gtc/type_ptr.h"
 #include "general/structures.h"
 #include "general/color.h"
 

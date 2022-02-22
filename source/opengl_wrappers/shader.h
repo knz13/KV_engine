@@ -21,6 +21,13 @@ public:
 
     ShaderCreationProperties CreateNew();
 
+    bool SetUniform1f(const string& name, float value);
+	bool SetUniform1i(const string& name, int value);
+	bool SetUniform3f(const string& name, float v0, float v1, float v2);
+	bool SetUniform4f(const string& name, float v0, float v1, float v2, float v3);
+	bool SetUniformMat4f(const string& name, const glm::mat4& mat);
+
+
     void Bind();
     void Unbind();
 
