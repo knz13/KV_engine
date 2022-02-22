@@ -83,6 +83,7 @@ static std::string LoadFileContents(std::string fileName) {
     std::string line;
     while(getline(stream,line)){
         fileContents += line;
+        fileContents += "\n";
     }
 
     return fileContents;
