@@ -24,11 +24,19 @@ void Shader::Unbind() {
 bool Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> sources) {
     
 
-    for(auto& shader : sources){
+    for(auto& [type,sources] : sources){
         unsigned int shaderID = -1;
-        ShaderType type = shader.first;
-        auto& sources = shader.second;
         
+        std::string shaderTypeName;
+        switch(type){
+        case ShaderType::Vertex:
+            shaderTypeName = "Vertex";
+            break;
+        case ShaderType::Fragment:
+            shaderTypeName = "Fragment";
+            break;
+            
+        }
 
         switch(type){
         case ShaderType::Vertex:
@@ -52,7 +60,7 @@ bool Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> 
 
         GL_CALL(glShaderSource(shaderID,index,files.data(),lengths.data()));
 
-        if(!CompileShader(shaderID)){
+        if(!CompileShader(shaderID,shaderTypeName)){
             return false;
         } 
         m_CompiledShadersCache.push_back(shaderID);
@@ -67,7 +75,7 @@ bool Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> 
     return true;
 
 }
-bool Shader::CompileShader(unsigned int shaderID) {
+bool Shader::CompileShader(unsigned int shaderID,std::string shaderTypeName) {
     GL_CALL(glCompileShader(shaderID));
 
     GLint success = 0;
@@ -85,7 +93,7 @@ bool Shader::CompileShader(unsigned int shaderID) {
             errorStr += character;
         }
 
-        LOG("Shader compilation error: " << errorStr);
+        LOG("Shader compilation error: " << errorStr << " at shader of type " + shaderTypeName);
 
         GL_CALL(glDeleteShader(shaderID));
 

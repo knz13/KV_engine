@@ -34,7 +34,7 @@ public:
 private:
     
     bool SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> source);
-    bool CompileShader(unsigned int shaderID);
+    bool CompileShader(unsigned int shaderID,std::string type);
     bool LinkShader();
 
 
