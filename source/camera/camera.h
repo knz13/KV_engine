@@ -29,7 +29,7 @@ private:
     float m_DrawDistance = 100.0f;
     float m_Fov = 45;
     glm::vec3 m_Position;
-    glm::quat m_Rotation;
+    glm::vec3 m_Rotation;
 
     
 };
