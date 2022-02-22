@@ -46,9 +46,13 @@ bool RegistryGetters::CachedShader(std::string relativeFilePath, Shader& shader)
     for(auto file : std::filesystem::directory_iterator(relativeFilePath)){
         std::string fileName = file.path().filename().string();
 
-        if(fileName.ends_with("vertex")){
+        if(fileName.ends_with("vert")){
             std::string source = LoadFileContents(std::filesystem::absolute(relativeFilePath).string());
             sources.push_back(std::make_pair(ShaderType::Vertex,source));
+        }
+        if(fileName.ends_with("frag")){
+            std::string source = LoadFileContents(std::filesystem::absolute(relativeFilePath).string());
+            sources.push_back(std::make_pair(ShaderType::Fragment,source));
         }
     }
 
