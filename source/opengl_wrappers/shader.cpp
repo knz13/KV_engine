@@ -195,11 +195,11 @@ bool Shader::SetUniform1f(const string& name, float value) {
     int location;
     GL_CALL(location = glGetUniformLocation(*m_ID.get(),name.c_str()));
     if(location == -1){
-        this->Unbind();
+        
         return false;
     }
     GL_CALL(glUniform1f(location,value));
-    this->Unbind();
+    
 }
 
 bool Shader::SetUniform1i(const string& name, int value) {
@@ -207,11 +207,11 @@ bool Shader::SetUniform1i(const string& name, int value) {
     int location;
     GL_CALL(location = glGetUniformLocation(*m_ID.get(),name.c_str()));
     if(location == -1){
-        this->Unbind();
+        
         return false;
     }
     GL_CALL(glUniform1i(location,value));
-    this->Unbind();
+    
 }
 
 bool Shader::SetUniform3f(const string& name, float v0, float v1, float v2) {
@@ -219,11 +219,11 @@ bool Shader::SetUniform3f(const string& name, float v0, float v1, float v2) {
     int location;
     GL_CALL(location = glGetUniformLocation(*m_ID.get(),name.c_str()));
     if(location == -1){
-        this->Unbind();
+        
         return false;
     }
     GL_CALL(glUniform3f(location,v0,v1,v2));
-    this->Unbind();
+    
 }
 
 bool Shader::SetUniform4f(const string& name, float v0, float v1, float v2, float v3) {
@@ -231,11 +231,11 @@ bool Shader::SetUniform4f(const string& name, float v0, float v1, float v2, floa
     int location;
     GL_CALL(location = glGetUniformLocation(*m_ID.get(),name.c_str()));
     if(location == -1){
-        this->Unbind();
+        
         return false;
     }
     GL_CALL(glUniform4f(location,v0,v1,v2,v3));
-    this->Unbind();
+    
 }
 
 bool Shader::SetUniformMat4f(const string& name, const glm::mat4& mat) {
@@ -243,9 +243,9 @@ bool Shader::SetUniformMat4f(const string& name, const glm::mat4& mat) {
     int location;
     GL_CALL(location = glGetUniformLocation(*m_ID.get(),name.c_str()));
     if(location == -1){
-        this->Unbind();
+        
         return false;
     }
     GL_CALL(glUniformMatrix4fv(location,1,GL_FALSE,glm::value_ptr(mat)));
-    this->Unbind();
+    
 }
