@@ -9,7 +9,7 @@
 
 std::unordered_map<std::string,Camera> Registry::m_Cameras;
 float Registry::m_DeltaTime;
-std::unordered_map<std::string,Shader> Registry::m_Shaders;
+std::unordered_map<std::string,std::unique_ptr<Shader>> Registry::m_Shaders;
 std::unique_ptr<Window> Registry::m_MainWindow;
 std::unordered_map<unsigned int,Drawable*> Registry::m_DrawableObjects;
 std::unordered_map<std::string,std::unique_ptr<Window>> Registry::m_SubWindows;
@@ -71,7 +71,7 @@ void Registry::MainLoop() {
 
             objectPointer->Update(m_DeltaTime);
 
-            Shader& currentObjectShader = m_Shaders[objectPointer->m_ShaderName];
+            Shader& currentObjectShader = *m_Shaders[objectPointer->m_ShaderName].get();
             
             currentObjectShader.Bind();
             currentObjectShader.SetUniformMat4f("MVP",m_MainWindow.get()->GetCurrentCamera().GetViewProjection(*m_MainWindow.get())*objectPointer->GetModelMatrix());
@@ -109,7 +109,7 @@ void Registry::MainLoop() {
 
                     objectPointer->Update(m_DeltaTime);
 
-                    Shader& currentObjectShader = m_Shaders[objectPointer->m_ShaderName];
+                    Shader& currentObjectShader = *m_Shaders[objectPointer->m_ShaderName].get();
                     
                     currentObjectShader.Bind();
                     currentObjectShader.SetUniformMat4f("MVP",it->second.get()->GetCurrentCamera().GetViewProjection(*it->second.get())*objectPointer->GetModelMatrix());

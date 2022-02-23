@@ -27,7 +27,7 @@ private:
     static float m_DeltaTime;
     static std::unique_ptr<Window> m_MainWindow;
     static std::unordered_map<std::string,std::unique_ptr<Window>> m_SubWindows;
-    static std::unordered_map<std::string,Shader> m_Shaders;
+    static std::unordered_map<std::string,std::unique_ptr<Shader>> m_Shaders;
     static std::unordered_map<std::string,Camera> m_Cameras;
     static std::unordered_map<unsigned int,Drawable*> m_DrawableObjects;
 

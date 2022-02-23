@@ -38,7 +38,7 @@ float RegistryGetters::DeltaTime() {
 
 bool RegistryGetters::CachedShader(std::string relativeFilePath, Shader& shader) {
     if(Registry::m_Shaders.find(relativeFilePath) != Registry::m_Shaders.end()){
-        shader = Registry::m_Shaders[relativeFilePath];
+        shader = *Registry::m_Shaders[relativeFilePath].get();
         return true;
     }
     
@@ -59,13 +59,19 @@ bool RegistryGetters::CachedShader(std::string relativeFilePath, Shader& shader)
             sources.push_back(std::make_pair(ShaderType::Fragment,source));
         }
     }
-
-    ShaderCreationProperties prop = shader.CreateNew();
+    
+    Registry::m_Shaders[relativeFilePath] = std::make_unique<Shader>();
+    ShaderCreationProperties prop = Registry::m_Shaders[relativeFilePath].get()->CreateNew();
     for(auto& [type,source] : sources){
         prop.AddShader(type,source);
     }
 
-    return prop.Generate();
+    if(!prop.Generate()){
+        Registry::m_Shaders.erase(relativeFilePath);
+        return false;
+    }
+
+    return true;
 
 
 }
