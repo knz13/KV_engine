@@ -87,7 +87,7 @@ void Window::BeginDrawState() {
     glfwGetWindowSize(m_ContextPointer, &m_Properties.width, &m_Properties.height);
     
     glm::vec4 viewport = GetCurrentCamera().GetViewPort();
-    GL_CALL(glViewport(viewport.x,viewport.y,viewport.z,viewport.w));
+    GL_CALL(glViewport(viewport.x*m_Properties.width,viewport.y*m_Properties.height,viewport.z*m_Properties.width,viewport.w*m_Properties.height));
 
     glm::vec3 color = m_ClearColor.Normalized();
     GL_CALL(glClearColor(color.x,color.y,color.z,1.0f));
