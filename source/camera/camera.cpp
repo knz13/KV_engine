@@ -15,13 +15,12 @@ void Camera::SetDirection(float x, float y, float z) {
 }
 
 void Camera::Rotate(float pitch, float yaw, float roll) {
-    glm::quat rotation(glm::radians(glm::vec3(pitch,yaw,roll)));
 
-    m_Rotation += glm::radians(glm::vec3(pitch,yaw,roll));
+    m_Rotation += glm::radians(glm::vec3(pitch,-yaw,roll));
 }
 
 void Camera::SetRotation(float pitch, float yaw, float roll) {
-    m_Rotation = glm::radians(glm::vec3(pitch,yaw,roll));
+    m_Rotation = glm::radians(glm::vec3(pitch,-yaw,roll));
 }
 
 void Camera::Move(float x, float y, float z) {
@@ -47,7 +46,7 @@ Camera::Camera() {
 }
 
 glm::vec3 Camera::GetRotation() {
-    return glm::degrees(m_Rotation);
+    return glm::degrees(glm::vec3(m_Rotation.x,-m_Rotation.y,m_Rotation.z));
 }
 
 glm::vec4 Camera::GetViewPort() {
