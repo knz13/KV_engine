@@ -70,7 +70,9 @@ Window::~Window() {
         func.second(*this);
     }
 
-    m_DrawingQueue.clear();
+    for(auto& [handle,obj] : m_DrawingQueue){
+       obj->~Drawable();
+    }
 
     glfwDestroyWindow(m_ContextPointer);
 

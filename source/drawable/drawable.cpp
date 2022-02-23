@@ -98,9 +98,12 @@ void Drawable::SetInactive() {
 }
 
 Drawable::Drawable() {
+    if(!Registry::Get().MainWindow()){
+        DEBUG_WARN("Trying to create a new object without any window bound. Create window first!");
+    }
     m_VAO = std::unique_ptr<VertexArray>(new VertexArray());
     m_ID = Registry::Create().DrawableObjectHandle(*this);
-    this->SetActive(Registry::Get().MainWindow());
+    this->SetActive(*Registry::Get().MainWindow());
 }
 
 Drawable::~Drawable() {

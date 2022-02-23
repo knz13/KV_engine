@@ -23,7 +23,7 @@ using namespace std;
 
 #define GL_SIZEOF(x) TestSize(x)
 #define KV_CLASS private: \
-                    friend class Registry; friend class RegistryCreates;friend class RegistryDeleters;friend class RegistryGetters;friend class RegistrySetters;
+                    friend class Registry; friend class RegistryCreates;friend class RegistryDeleters;friend class RegistryGetters;friend class RegistrySetters;friend class Window;
 #define KV_DRAWING_MODE private: friend class Drawable;
 
 
