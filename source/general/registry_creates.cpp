@@ -2,7 +2,7 @@
 #include "registry.h"
 #include "window/window.h"
 #include "camera/camera.h"
-
+#include "drawable/drawable.h"
 
 Window& RegistryCreates::MainWindow(WindowCreationProperties prop) {
 
@@ -64,4 +64,13 @@ Camera& RegistryCreates::PerspectiveCamera(CameraCreationProperties prop,Window*
 
     return Registry::m_Cameras[prop.cameraName];
 
+}
+
+unsigned int RegistryCreates::DrawableObjectHandle(Drawable& dr) {
+    static unsigned int lastUsedHandle = 0;
+
+    Registry::m_DrawableObjects[lastUsedHandle] = &dr;
+
+    return lastUsedHandle++;
+    
 }

@@ -2,6 +2,7 @@
 #include "../global.h"
 
 class Window;
+class Drawable;
 class RegistryCreates {
 public:
     Window& MainWindow(WindowCreationProperties prop);
@@ -10,5 +11,10 @@ public:
 
     Camera& PerspectiveCamera(CameraCreationProperties prop,Window* windowToSetCurrentOn=nullptr);
     
+
+private:
+    unsigned int DrawableObjectHandle(Drawable& dr);
+
+    friend class Drawable;
 
 };

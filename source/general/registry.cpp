@@ -11,6 +11,7 @@ std::unordered_map<std::string,Camera> Registry::m_Cameras;
 float Registry::m_DeltaTime;
 std::unordered_map<std::string,Shader> Registry::m_Shaders;
 std::unique_ptr<Window> Registry::m_MainWindow;
+std::unordered_map<unsigned int,Drawable*> Registry::m_DrawableObjects;
 std::unordered_map<std::string,std::unique_ptr<Window>> Registry::m_SubWindows;
 
 template<typename T>
@@ -61,9 +62,31 @@ void Registry::MainLoop() {
         for(auto& func : m_MainWindow.get()->m_PreDrawingLoopFuncs){
             func.second(*m_MainWindow.get());
         }
-        for(auto& func : m_MainWindow.get()->m_DrawingLoopFuncs){
-            func.second(*m_MainWindow.get());
+
+        for(auto& [handle,objectPointer] : m_MainWindow.get()->m_DrawingQueue){
+            
+            if(!objectPointer->ReadyToDraw()){
+                continue;
+            }
+
+            objectPointer->Update(m_DeltaTime);
+
+            Shader& currentObjectShader = m_Shaders[objectPointer->m_ShaderName];
+            
+            currentObjectShader.Bind();
+            currentObjectShader.SetUniformMat4f("MVP",m_MainWindow.get()->GetCurrentCamera().GetViewProjection(*m_MainWindow.get())*objectPointer->GetModelMatrix());
+
+            for (auto& [preDrawFuncHandle,preDrawFunc] : objectPointer->m_PreDrawFuncs){
+                preDrawFunc(*objectPointer,currentObjectShader);
+            }
+
+            objectPointer->Draw();
+
+            for (auto& [postDrawFuncHandle,postDrawFunc] : objectPointer->m_PostDrawFuncs){
+                postDrawFunc(*objectPointer);
+            }
         }
+
         for(auto& func : m_MainWindow.get()->m_PostDrawingLoopFuncs){
             func.second(*m_MainWindow.get());
         }
@@ -77,9 +100,32 @@ void Registry::MainLoop() {
                 for(auto& func : it->second.get()->m_PreDrawingLoopFuncs){
                     func.second(*it->second.get());
                 }
-                for(auto& func : it->second.get()->m_DrawingLoopFuncs){
-                    func.second(*it->second.get());
+                
+                for(auto& [handle,objectPointer] : it->second.get()->m_DrawingQueue){
+            
+                    if(!objectPointer->ReadyToDraw()){
+                        continue;
+                    }
+
+                    objectPointer->Update(m_DeltaTime);
+
+                    Shader& currentObjectShader = m_Shaders[objectPointer->m_ShaderName];
+                    
+                    currentObjectShader.Bind();
+                    currentObjectShader.SetUniformMat4f("MVP",it->second.get()->GetCurrentCamera().GetViewProjection(*it->second.get())*objectPointer->GetModelMatrix());
+
+                    for (auto& [preDrawFuncHandle,preDrawFunc] : objectPointer->m_PreDrawFuncs){
+                        preDrawFunc(*objectPointer,currentObjectShader);
+                    }
+
+                    objectPointer->Draw();
+
+                    for (auto& [postDrawFuncHandle,postDrawFunc] : objectPointer->m_PostDrawFuncs){
+                        postDrawFunc(*objectPointer);
+                    }
                 }
+
+
                 for(auto& func : it->second.get()->m_PostDrawingLoopFuncs){
                     func.second(*it->second.get());
                 }

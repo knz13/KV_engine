@@ -69,3 +69,7 @@ bool RegistryGetters::CachedShader(std::string relativeFilePath, Shader& shader)
 
 
 }
+
+std::unordered_map<unsigned int,Drawable*>& RegistryGetters::DrawableObjects() {
+    return Registry::m_DrawableObjects;
+}

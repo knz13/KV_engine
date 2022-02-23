@@ -6,6 +6,7 @@
 #include "registry_deleters.h"
 
 class Shader;
+class Model;
 class Registry {
 public:
 
@@ -28,6 +29,7 @@ private:
     static std::unordered_map<std::string,std::unique_ptr<Window>> m_SubWindows;
     static std::unordered_map<std::string,Shader> m_Shaders;
     static std::unordered_map<std::string,Camera> m_Cameras;
+    static std::unordered_map<unsigned int,Drawable*> m_DrawableObjects;
 
     friend class RegistryCreates;
     friend class RegistryGetters;

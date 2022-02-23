@@ -119,3 +119,13 @@ void Window::SetCamera(Camera& camera) {
 Camera& Window::GetCurrentCamera() {
     return *m_MainCamera;
 }
+
+void Window::AddToDrawingQueue(unsigned int id) {
+    m_DrawingQueue[id] = Registry::Get().DrawableObjects()[id];
+}
+
+void Window::RemoveFromDrawingQueue(unsigned int id) {
+    if(m_DrawingQueue.find(id) != m_DrawingQueue.end()){
+        m_DrawingQueue.erase(id);
+    }
+}

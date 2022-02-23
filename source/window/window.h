@@ -4,6 +4,7 @@
 
 
 class Camera;
+class Drawable;
 class Window {
 
     KV_CLASS
@@ -20,7 +21,7 @@ public:
     FunctionSink<void(Window&)> PostDrawingLoop();
     FunctionSink<void(Window&)> Closing();
 
-
+    
 
     Camera& GetCurrentCamera();
     void SetClearColor(Color color);
@@ -28,6 +29,13 @@ public:
 
     const WindowCreationProperties& Properties() const;
     GLFWwindow* GetContextPointer();
+
+protected:
+
+    void AddToDrawingQueue(unsigned int id);
+    void RemoveFromDrawingQueue(unsigned int id);
+
+    friend class Drawable;
 
 private:
     void BeginDrawState();
@@ -38,12 +46,13 @@ private:
     GLFWwindow* m_ContextPointer=nullptr;
 
     Camera* m_MainCamera = nullptr;
+    std::map<unsigned int,Drawable*> m_DrawingQueue;
     std::unordered_map<uint32_t,std::function<void(Window&)>> m_PreDrawingLoopFuncs;
     std::unordered_map<uint32_t,std::function<void(Window&)>> m_PostDrawingLoopFuncs;
     std::unordered_map<uint32_t,std::function<void(Window&)>> m_ClosingCallbackFuncs;
     Color m_ClearColor = Color::Black;
     
-
+    
 
 
 };
