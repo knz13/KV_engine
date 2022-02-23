@@ -59,6 +59,8 @@ void Registry::MainLoop() {
         glfwMakeContextCurrent(m_MainWindow.get()->m_ContextPointer);
         m_MainWindow.get()->BeginDrawState();
         
+        
+
         for(auto& func : m_MainWindow.get()->m_PreDrawingLoopFuncs){
             func.second(*m_MainWindow.get());
         }
@@ -97,6 +99,8 @@ void Registry::MainLoop() {
             if(it->second.get()->IsOpen()){
                 glfwMakeContextCurrent(it->second.get()->m_ContextPointer);
                 it->second.get()->BeginDrawState();
+
+
                 for(auto& func : it->second.get()->m_PreDrawingLoopFuncs){
                     func.second(*it->second.get());
                 }

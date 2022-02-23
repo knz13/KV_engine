@@ -46,6 +46,8 @@ Camera& RegistryCreates::PerspectiveCamera(CameraCreationProperties prop,Window*
     camera.m_DrawDistance = prop.drawDistance;
     camera.m_Position = prop.initialPos;
     camera.m_Rotation = prop.initialRotationRadians;
+    camera.m_ViewPort = prop.viewPort;
+    
 
     if(Registry::m_Cameras.find(prop.cameraName) != Registry::m_Cameras.end()){
         prop.cameraName += "_1";

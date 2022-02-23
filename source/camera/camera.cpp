@@ -52,3 +52,7 @@ Camera::Camera() {
 glm::vec3 Camera::GetRotation() {
     return glm::degrees(m_Rotation);
 }
+
+glm::vec4 Camera::GetViewPort() {
+    return m_ViewPort;
+}

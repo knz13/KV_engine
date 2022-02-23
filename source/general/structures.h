@@ -112,6 +112,7 @@ struct CameraCreationProperties {
     float drawingNearCutoff = 0.1f;
     glm::vec3 initialPos = glm::vec3(0,0,0);
     glm::vec3 initialRotationRadians = glm::vec3(0,0,0);
+    glm::vec4 viewPort = glm::vec4(0,0,1,1);
 };
 
 struct WindowCreationProperties {

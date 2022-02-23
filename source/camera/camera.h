@@ -22,6 +22,7 @@ public:
     const glm::vec3& GetPosition();
     glm::mat4 GetViewProjection(const Window& window);
 
+    glm::vec4 GetViewPort();
 
 private:
 
@@ -30,6 +31,7 @@ private:
     float m_DrawNear = 0;
     float m_DrawDistance = 100.0f;
     float m_Fov = 45;
+    glm::vec4 m_ViewPort = glm::vec4(0,0,1,1);
     glm::vec3 m_Position = glm::vec3(0,0,0);
     glm::vec3 m_Rotation = glm::vec3(0,0,0);
 

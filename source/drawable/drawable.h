@@ -12,6 +12,7 @@ public:
     Drawable();
     ~Drawable();
 
+    void Copy(const Drawable& dr);
     bool SetShader(std::string shaderLocation);
     void SetActive(Window& win);
     void SetActive();
