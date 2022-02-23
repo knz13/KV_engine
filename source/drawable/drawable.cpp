@@ -78,6 +78,7 @@ void Drawable::SetActive(Window& win) {
         m_CurrentWindow->RemoveFromDrawingQueue(m_ID);
     }
     m_CurrentWindow = &win;
+    m_CurrentWindow->AddToDrawingQueue(m_ID);
     m_Active = true;
 }
 
