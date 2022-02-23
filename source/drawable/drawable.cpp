@@ -97,6 +97,7 @@ void Drawable::SetInactive() {
 }
 
 Drawable::Drawable() {
+    m_CurrentWindow = &Registry::Get().MainWindow();
     m_VAO = std::unique_ptr<VertexArray>(new VertexArray());
     m_ID = Registry::Create().DrawableObjectHandle(*this);
 }
