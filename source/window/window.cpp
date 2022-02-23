@@ -105,10 +105,6 @@ FunctionSink<void(Window&)> Window::PostDrawingLoop() {
     return FunctionSink<void(Window&)>(m_PostDrawingLoopFuncs);
 }
 
-FunctionSink<void(Window&)> Window::DrawingLoop() {
-    return FunctionSink<void(Window&)>(m_DrawingLoopFuncs);
-}
-
 FunctionSink<void(Window&)> Window::PreDrawingLoop() {
     return FunctionSink<void(Window&)>(m_PreDrawingLoopFuncs);
 }

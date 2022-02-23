@@ -17,9 +17,10 @@ public:
     bool IsOpen();
     
     FunctionSink<void(Window&)> PreDrawingLoop();
-    FunctionSink<void(Window&)> DrawingLoop();
     FunctionSink<void(Window&)> PostDrawingLoop();
     FunctionSink<void(Window&)> Closing();
+
+
 
     Camera& GetCurrentCamera();
     void SetClearColor(Color color);
@@ -38,7 +39,6 @@ private:
 
     Camera* m_MainCamera = nullptr;
     std::unordered_map<uint32_t,std::function<void(Window&)>> m_PreDrawingLoopFuncs;
-    std::unordered_map<uint32_t,std::function<void(Window&)>> m_DrawingLoopFuncs;
     std::unordered_map<uint32_t,std::function<void(Window&)>> m_PostDrawingLoopFuncs;
     std::unordered_map<uint32_t,std::function<void(Window&)>> m_ClosingCallbackFuncs;
     Color m_ClearColor = Color::Black;

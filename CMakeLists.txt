@@ -138,6 +138,7 @@ add_library(${PROJECT_NAME}
 	${PROJECT_SOURCE_DIR}/source/general/registry_deleters.cpp
 	${PROJECT_SOURCE_DIR}/source/general/registry_getters.cpp
 	${PROJECT_SOURCE_DIR}/source/camera/camera.cpp
+	${PROJECT_SOURCE_DIR}/source/drawable/drawable.cpp
 )
         
 #setting c/cpp standard
