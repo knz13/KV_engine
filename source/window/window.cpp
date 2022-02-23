@@ -1,4 +1,6 @@
 #include "window.h"
+#include "kv.h"
+
 
 Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
     
@@ -56,7 +58,8 @@ Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
         return;
     }
 
-    
+    CameraCreationProperties camProp;
+    Registry::Create().PerspectiveCamera(camProp,this);
 
 }
 
@@ -112,4 +115,11 @@ FunctionSink<void(Window&)> Window::PreDrawingLoop() {
 
 FunctionSink<void(Window&)> Window::Closing() {
     return FunctionSink<void(Window&)>(m_ClosingCallbackFuncs);
+}
+void Window::SetCamera(Camera& camera) {
+    m_MainCamera = &camera;
+}
+
+Camera& Window::GetCurrentCamera() {
+    return *m_MainCamera;
 }

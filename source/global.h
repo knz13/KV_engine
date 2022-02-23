@@ -19,8 +19,10 @@
 using namespace std;
 
 
-#define GL_SIZEOF(x) TestSize(x)
 
+#define GL_SIZEOF(x) TestSize(x)
+#define KV_CLASS private: \
+                    friend class Registry; friend class RegistryCreates;friend class RegistryDeleters;friend class RegistryGetters;friend class RegistrySetters;
 
 static unsigned int TestSize(unsigned int dataType) {
     switch (dataType) {

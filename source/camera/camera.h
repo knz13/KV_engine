@@ -4,9 +4,10 @@
 class Window;
 class Camera {
 
-public:
-
-    Camera(const Window& win);
+    KV_CLASS
+    
+public: 
+    Camera();
 
     void SetLookAt(float x,float y,float z);
     void SetDirection(float x,float y,float z);
@@ -19,12 +20,13 @@ public:
     
     glm::vec3 GetRotation();
     const glm::vec3& GetPosition();
-    glm::mat4 GetViewProjection();
+    glm::mat4 GetViewProjection(const Window& window);
 
 
 private:
 
-    const Window& m_CurrentWindow;
+    
+    
     float m_DrawNear = 0;
     float m_DrawDistance = 100.0f;
     float m_Fov = 45;

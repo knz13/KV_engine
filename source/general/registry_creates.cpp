@@ -1,7 +1,7 @@
 #include "registry_creates.h"
 #include "registry.h"
 #include "window/window.h"
-
+#include "camera/camera.h"
 
 
 Window& RegistryCreates::MainWindow(WindowCreationProperties prop) {
@@ -36,3 +36,32 @@ Window& RegistryCreates::SubWindow(std::string windowName, WindowCreationPropert
 }
 
 
+
+Camera& RegistryCreates::PerspectiveCamera(CameraCreationProperties prop,Window* windowToSetCurrentOn) {
+    
+    Camera camera;
+
+    camera.m_Fov = prop.fov;
+    camera.m_DrawNear = prop.drawingNearCutoff;
+    camera.m_DrawDistance = prop.drawDistance;
+    camera.m_Position = prop.initialPos;
+    camera.m_Rotation = prop.initialRotationRadians;
+
+    if(Registry::m_Cameras.find(prop.cameraName) != Registry::m_Cameras.end()){
+        prop.cameraName += "_1";
+        int index = 1;
+        while(Registry::m_Cameras.find(prop.cameraName) != Registry::m_Cameras.end()){
+            prop.cameraName = prop.cameraName.substr(0,prop.cameraName.size()-3) + "_" + std::to_string(index);
+            index++;
+        }
+    }
+
+    Registry::m_Cameras[prop.cameraName] = std::move(camera);
+
+    if(windowToSetCurrentOn){
+        windowToSetCurrentOn->SetCamera(Registry::m_Cameras[prop.cameraName]);
+    }
+
+    return Registry::m_Cameras[prop.cameraName];
+
+}

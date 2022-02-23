@@ -105,6 +105,15 @@ struct ShaderProperties {
 
 };
 
+struct CameraCreationProperties {
+    std::string cameraName = "camera";
+    float fov = 45.0f;
+    float drawDistance = 100.0f;
+    float drawingNearCutoff = 0.1f;
+    glm::vec3 initialPos;
+    glm::vec3 initialRotationRadians;
+};
+
 struct WindowCreationProperties {
     int width=640;
     int height=480;

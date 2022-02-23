@@ -6,6 +6,8 @@
 #include "window/window.h"
 #include <future>
 
+
+std::unordered_map<std::string,Camera> Registry::m_Cameras;
 float Registry::m_DeltaTime;
 std::unordered_map<std::string,Shader> Registry::m_Shaders;
 std::unique_ptr<Window> Registry::m_MainWindow;

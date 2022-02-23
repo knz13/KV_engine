@@ -38,14 +38,14 @@ const glm::vec3& Camera::GetPosition() {
     return m_Position;
 }
 
-glm::mat4 Camera::GetViewProjection() {
-    return glm::perspective(m_Fov,(float)m_CurrentWindow.Properties().width/m_CurrentWindow.Properties().height,m_DrawNear,m_DrawDistance) * glm::inverse(glm::translate(glm::mat4(1.0f),m_Position) 
+glm::mat4 Camera::GetViewProjection(const Window& window) {
+    return glm::perspective(m_Fov,(float)window.Properties().width/window.Properties().height,m_DrawNear,m_DrawDistance) * glm::inverse(glm::translate(glm::mat4(1.0f),m_Position) 
     *glm::rotate(glm::mat4(1.0f),m_Rotation.x,glm::vec3(1,0,0))
     *glm::rotate(glm::mat4(1.0f),m_Rotation.y,glm::vec3(0,1,0))
     *glm::rotate(glm::mat4(1.0f),m_Rotation.z,glm::vec3(0,0,1)));
 }
 
-Camera::Camera(const Window& win) : m_CurrentWindow(win){
+Camera::Camera() {
     
 }
 
