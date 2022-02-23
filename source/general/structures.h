@@ -110,8 +110,8 @@ struct CameraCreationProperties {
     float fov = 45.0f;
     float drawDistance = 100.0f;
     float drawingNearCutoff = 0.1f;
-    glm::vec3 initialPos;
-    glm::vec3 initialRotationRadians;
+    glm::vec3 initialPos = glm::vec3(0,0,0);
+    glm::vec3 initialRotationRadians = glm::vec3(0,0,0);
 };
 
 struct WindowCreationProperties {
