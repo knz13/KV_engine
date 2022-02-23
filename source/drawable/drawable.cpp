@@ -118,11 +118,15 @@ glm::mat4 Drawable::GetModelMatrix() {
 void Drawable::Draw() {
     m_VAO.get()->Bind();
     if(m_VAO.get()->HasIndexBuffer()){
-        GL_CALL(glDrawElements(m_DrawingMode,m_VAO.get()->GetDrawCount(),GL_UNSIGNED_INT,nullptr));
+        GL_CALL(glDrawElements(m_DrawingMode.GetDrawingType(),m_VAO.get()->GetDrawCount(),GL_UNSIGNED_INT,nullptr));
     }
     else {
-        GL_CALL(glDrawArrays(m_DrawingMode,0,m_VAO.get()->GetDrawCount()));
+        GL_CALL(glDrawArrays(m_DrawingMode.GetDrawingType(),0,m_VAO.get()->GetDrawCount()));
     }
 }
 
 
+
+void Drawable::SetDrawingMode(DrawingMode mode) {
+    m_DrawingMode = mode;
+}

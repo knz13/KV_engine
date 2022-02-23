@@ -61,6 +61,8 @@ Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
     CameraCreationProperties camProp;
     Registry::Create().PerspectiveCamera(camProp,this);
 
+    GL_CALL(glEnable(GL_PROGRAM_POINT_SIZE));
+
 }
 
 Window::~Window() {

@@ -1,7 +1,7 @@
 #pragma once
 #include "../global.h"
 #include "../opengl_wrappers/vertex_array.h"
-
+#include "drawing_modes.h"
 
 class Shader;
 class Drawable {
@@ -29,7 +29,7 @@ public:
     virtual void SetScale(float x,float y,float z);
     virtual void ChangeScale(float x,float y,float z);
 
-    void SetDrawingMode(GLenum mode);
+    void SetDrawingMode(DrawingMode mode);
 
     FunctionSink<void(Drawable&)> Moved();
     FunctionSink<void(Drawable&)> Rotated();
@@ -49,8 +49,8 @@ private:
     glm::vec3 m_Rotation = glm::vec3(0,0,0);
     glm::vec3 m_Scale = glm::vec3(1,1,1);
 
-
-    GLenum m_DrawingMode = GL_TRIANGLES;
+    
+    DrawingMode m_DrawingMode;
     Window* m_CurrentWindow = nullptr;
     unique_ptr<VertexArray> m_VAO;
     std::string m_ShaderName = "";
