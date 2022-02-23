@@ -107,6 +107,7 @@ Drawable::Drawable() {
 }
 
 Drawable::~Drawable() {
+    SetInactive();
     Registry::Delete().DestroyDrawableHandle(m_ID);
 }
 
