@@ -30,8 +30,8 @@ private:
     float m_DrawNear = 0;
     float m_DrawDistance = 100.0f;
     float m_Fov = 45;
-    glm::vec3 m_Position;
-    glm::vec3 m_Rotation;
+    glm::vec3 m_Position = glm::vec3(0,0,0);
+    glm::vec3 m_Rotation = glm::vec3(0,0,0);
 
     
 };
