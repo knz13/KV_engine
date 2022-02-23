@@ -69,7 +69,11 @@ Window::~Window() {
     for(auto& func : m_ClosingCallbackFuncs){
         func.second(*this);
     }
+
+    m_DrawingQueue.clear();
+
     glfwDestroyWindow(m_ContextPointer);
+
 }
 
 bool Window::IsOpen() {
