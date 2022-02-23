@@ -18,8 +18,10 @@ Window& RegistryCreates::MainWindow(WindowCreationProperties prop) {
     Registry::m_MainWindow = std::make_unique<Window>(prop);
     Registry::m_MainWindow.get()->Closing().Connect([&](Window& win){
         Registry::m_Shaders.clear();
-        for(auto& window : Registry::Get().SubWindows()){
-            glfwSetWindowShouldClose(window.second.get()->GetContextPointer(),GL_TRUE);
+        if(Registry::Get().SubWindows().size() > 0){
+            for(auto& window : Registry::Get().SubWindows()){
+                glfwSetWindowShouldClose(window.second.get()->GetContextPointer(),GL_TRUE);
+            }
         }
     });
     return *Registry::m_MainWindow.get();
