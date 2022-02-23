@@ -3,6 +3,7 @@
 #include "window/window.h"
 #include "camera/camera.h"
 #include "drawable/drawable.h"
+#include "opengl_wrappers/shader.h"
 
 Window& RegistryCreates::MainWindow(WindowCreationProperties prop) {
 
@@ -12,7 +13,15 @@ Window& RegistryCreates::MainWindow(WindowCreationProperties prop) {
         return *Registry::m_MainWindow.get();
     }
 
+    
+
     Registry::m_MainWindow = std::make_unique<Window>(prop);
+    Registry::m_MainWindow.get()->Closing().Connect([&](Window& win){
+        Registry::m_Shaders.clear();
+        for(auto& window : Registry::Get().SubWindows()){
+            glfwSetWindowShouldClose(window.second.get()->GetContextPointer(),GL_TRUE);
+        }
+    });
     return *Registry::m_MainWindow.get();
 }
 

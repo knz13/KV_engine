@@ -40,12 +40,6 @@ void Registry::MainLoop() {
         return;
     }
 
-    glfwSetWindowCloseCallback(m_MainWindow.get()->m_ContextPointer,[](GLFWwindow* windowPointer){
-        for(auto& window : Registry::Get().SubWindows()){
-            glfwSetWindowShouldClose(window.second.get()->GetContextPointer(),GL_TRUE);
-        }
-    });
-
     
     while(m_MainWindow.get()->IsOpen()){
 
