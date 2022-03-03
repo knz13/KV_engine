@@ -211,7 +211,11 @@ install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTE
 #installing libraries from dependencies...
 
 
-    install(FILES ${${PROJECT_NAME}_LIBRARIES} DESTINATION lib)    
+    install(FILES ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION lib)
+
+    install(FILES ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION lib)
+
+include(CPack)        
 
 #adding dependencies
 
