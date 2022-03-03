@@ -174,13 +174,13 @@ bool Shader::LinkShader() {
     for(int i = 0;i<count;i++){
 
         std::vector<char> maxSize(255);
-        std::string name;
+        std::string name = "";
         int length,size,type,location;
         GL_CALL(glGetActiveUniform(*m_ID.get(),i,maxSize.size(),&length,&size,(GLenum*)&type,maxSize.data()));
-        name.reserve(length);
-
-        std::copy(maxSize.begin(),maxSize.begin()+length,name.begin());
-
+        
+        for(int i = 0;i<length;i++){
+            name += maxSize[i];
+        }
         
         GL_CALL(location = glGetUniformLocation(*m_ID.get(),name.c_str()));
 
