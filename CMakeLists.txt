@@ -29,12 +29,6 @@ include(ExternalProject)
 include(FetchContent)
 
 
-#adding options       
-     
-
-option("ENABLE_MODEL_LOADING" "Enables the build of the assimp library and the model loading capabilities" ON)
-
-
 #project name
 project("kv")
 
@@ -46,22 +40,6 @@ set(${PROJECT_NAME}_LIBRARIES )
 
         
         
-
-if(ENABLE_MODEL_LOADING)
-
-    #adding compiler definition for this option
-    
-    add_compile_definitions(ENABLE_MODEL_LOADING)
-
-    #adding sources specific to this option
-    
-    
-
-
-
-endif()
-
-
 
 # repository download and settings for glm...
 
