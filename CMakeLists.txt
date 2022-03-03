@@ -318,6 +318,8 @@ install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTE
 #installing libraries from dependencies...
 
 
+include(CPack)        
+
 #adding dependencies
 
 foreach(X ${${PROJECT_NAME}_DEPS_TO_BUILD})
