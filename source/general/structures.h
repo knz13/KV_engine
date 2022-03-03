@@ -127,7 +127,7 @@ struct WindowCreationProperties {
 class Window;
 template<typename T>
 struct FunctionSink {
-    FunctionSink(std::unordered_map<uint32_t,std::function<T>>& sink);
+    FunctionSink(std::map<uint32_t,std::function<T>>& sink);
 
     uint32_t Connect(std::function<T> windowFunc);
     bool Disconnect(uint32_t handle);
@@ -136,14 +136,14 @@ private:
 
     bool GetNewHandle();
 
-    std::unordered_map<uint32_t,std::function<T>>& m_FuncRef;
+    std::map<uint32_t,std::function<T>>& m_FuncRef;
 
-    static std::unordered_map<void*,uint32_t> m_HandleCount;
+    static std::map<void*,uint32_t> m_HandleCount;
 
 };
 
 template<typename T>
-std::unordered_map<void*,uint32_t> FunctionSink<T>::m_HandleCount;
+std::map<void*,uint32_t> FunctionSink<T>::m_HandleCount;
 
 template<typename T>
 uint32_t FunctionSink<T>::Connect(std::function<T> windowFunc) {
@@ -163,7 +163,7 @@ bool FunctionSink<T>::Disconnect(uint32_t handle) {
 
 
 template<typename T>
-FunctionSink<T>::FunctionSink(std::unordered_map<uint32_t,std::function<T>>& sink) : m_FuncRef(sink){
+FunctionSink<T>::FunctionSink(std::map<uint32_t,std::function<T>>& sink) : m_FuncRef(sink){
     if(FunctionSink::m_HandleCount.find((void*)&sink) == FunctionSink::m_HandleCount.end()){
         FunctionSink::m_HandleCount[(void*)&sink] = 0;
     }

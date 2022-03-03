@@ -2,7 +2,3 @@
 #include "registry.h"
 
 
-
-void RegistryDeleters::DestroyDrawableHandle(unsigned int id) {
-    
-}

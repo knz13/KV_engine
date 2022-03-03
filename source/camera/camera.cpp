@@ -2,6 +2,7 @@
 #include "kv.h"
 
 
+std::unordered_map<std::string,Camera> Camera::m_Cameras;
 
 void Camera::SetLookAt(float x, float y, float z) {
     glm::mat4 lookat = glm::lookAt(m_Position,glm::vec3(x,y,z),glm::vec3(0,1,0));
@@ -51,4 +52,33 @@ glm::vec3 Camera::GetRotation() {
 
 glm::vec4 Camera::GetViewPort() {
     return m_ViewPort;
+}
+
+Camera& Camera::GeneratePerspectiveCamera(CameraCreationProperties prop, Window* windowToSetCurrentOn) {
+    Camera camera;
+
+    camera.m_Fov = prop.fov;
+    camera.m_DrawNear = prop.drawingNearCutoff;
+    camera.m_DrawDistance = prop.drawDistance;
+    camera.m_Position = prop.initialPos;
+    camera.m_Rotation = prop.initialRotationRadians;
+    camera.m_ViewPort = prop.viewPort;
+    
+
+    if(Camera::m_Cameras.find(prop.cameraName) != Camera::m_Cameras.end()){
+        prop.cameraName += "_1";
+        int index = 1;
+        while(Camera::m_Cameras.find(prop.cameraName) != Camera::m_Cameras.end()){
+            prop.cameraName = prop.cameraName.substr(0,prop.cameraName.size()-3) + "_" + std::to_string(index);
+            index++;
+        }
+    }
+
+    Camera::m_Cameras[prop.cameraName] = std::move(camera);
+
+    if(windowToSetCurrentOn){
+        windowToSetCurrentOn->SetCamera(Camera::m_Cameras[prop.cameraName]);
+    }
+
+    return Camera::m_Cameras[prop.cameraName];
 }

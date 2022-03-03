@@ -1,5 +1,8 @@
 #include "shader.h"
 
+
+std::unordered_map<std::string,std::unique_ptr<Shader>> Shader::m_LoadedShaders;
+
 Shader::Shader() {
     
 
@@ -162,6 +165,34 @@ bool Shader::LinkShader() {
         return false;
         
     }
+
+    // loading the uniforms
+
+    int count;
+    GL_CALL(glGetProgramiv(*m_ID.get(),GL_ACTIVE_UNIFORMS,&count));
+
+    for(int i = 0;i<count;i++){
+
+        std::vector<char> maxSize(255);
+        std::string name;
+        int length,size,type,location;
+        GL_CALL(glGetActiveUniform(*m_ID.get(),i,maxSize.size(),&length,&size,(GLenum*)&type,maxSize.data()));
+        name.reserve(length);
+
+        std::copy(maxSize.begin(),maxSize.begin()+length,name.begin());
+
+        
+        GL_CALL(location = glGetUniformLocation(*m_ID.get(),name.c_str()));
+
+
+        ShaderUniformContainer container;
+        container.location = location;
+        container.size = size;
+        container.type = type;
+        m_UniformLocations[name] = std::move(container);
+    }
+
+
 
     return true;
 

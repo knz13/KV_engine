@@ -5,8 +5,8 @@
 #include <filesystem>
 
 Window* RegistryGetters::MainWindow() {
-    if(Registry::m_MainWindow){
-        return Registry::m_MainWindow.get();
+    if(Window::m_MainWindow){
+        return Window::m_MainWindow;
     }
     else {
         DEBUG_WARN("Calling Registry::Get().MainWindow() without any window created. Create window first!");
@@ -14,27 +14,14 @@ Window* RegistryGetters::MainWindow() {
     }
 }
 
-Window* RegistryGetters::SubWindow(std::string windowName) {
-    if(Registry::m_SubWindows.find(windowName) != Registry::m_SubWindows.end()){
-        return Registry::m_SubWindows[windowName].get();
-    }
-    else {
-        DEBUG_WARN("Subwindow with name: '" + windowName +"' was not found...");
-        return nullptr;
-    }
-}
-
-std::unordered_map<std::string,std::unique_ptr<Window>>& RegistryGetters::SubWindows() {
-    return Registry::m_SubWindows;
-}
 
 float RegistryGetters::DeltaTime() {
     return Registry::m_DeltaTime;
 }
 
 bool RegistryGetters::CachedShader(std::string relativeFilePath, Shader& shader) {
-    if(Registry::m_Shaders.find(relativeFilePath) != Registry::m_Shaders.end()){
-        shader = *Registry::m_Shaders[relativeFilePath].get();
+    if(Shader::m_LoadedShaders.find(relativeFilePath) != Shader::m_LoadedShaders.end()){
+        shader = *Shader::m_LoadedShaders[relativeFilePath].get();
         return true;
     }
     
@@ -56,14 +43,14 @@ bool RegistryGetters::CachedShader(std::string relativeFilePath, Shader& shader)
         }
     }
     
-    Registry::m_Shaders[relativeFilePath] = std::make_unique<Shader>();
-    ShaderCreationProperties prop = Registry::m_Shaders[relativeFilePath].get()->CreateNew();
+    Shader::m_LoadedShaders[relativeFilePath] = std::make_unique<Shader>();
+    ShaderCreationProperties prop = Shader::m_LoadedShaders[relativeFilePath].get()->CreateNew();
     for(auto& [type,source] : sources){
         prop.AddShader(type,source);
     }
 
     if(!prop.Generate()){
-        Registry::m_Shaders.erase(relativeFilePath);
+        Shader::m_LoadedShaders.erase(relativeFilePath);
         return false;
     }
 
@@ -73,5 +60,7 @@ bool RegistryGetters::CachedShader(std::string relativeFilePath, Shader& shader)
 }
 
 std::unordered_map<unsigned int,Drawable*>& RegistryGetters::DrawableObjects() {
-    return Registry::m_DrawableObjects;
+    return Drawable::m_DrawableObjects;
 }
+
+

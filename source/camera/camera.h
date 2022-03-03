@@ -36,4 +36,11 @@ private:
     glm::vec3 m_Rotation = glm::vec3(0,0,0);
 
     
+    //static members
+
+    static Camera& GeneratePerspectiveCamera(CameraCreationProperties prop,Window* windowToSetCurrentOn=nullptr);
+
+    static std::unordered_map<std::string,Camera> m_Cameras;
+
+
 };

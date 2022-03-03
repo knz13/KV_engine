@@ -5,16 +5,10 @@ class Window;
 class Drawable;
 class RegistryCreates {
 public:
-    Window& MainWindow(WindowCreationProperties prop);
-
-    Window& SubWindow(std::string windowName,WindowCreationProperties prop);
 
     Camera& PerspectiveCamera(CameraCreationProperties prop,Window* windowToSetCurrentOn=nullptr);
     
 
-private:
-    unsigned int DrawableObjectHandle(Drawable& dr);
 
-    friend class Drawable;
 
 };

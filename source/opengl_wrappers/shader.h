@@ -13,8 +13,15 @@ private:
     std::unordered_map<ShaderType,std::vector<std::string>> m_Shaders;
 };
 
+struct ShaderUniformContainer {
+    int location = -1;
+    std::string type = "";
+    int size = -1;
+};
+
 
 class Shader {
+    KV_CLASS
 public:
 
     Shader();
@@ -38,9 +45,19 @@ private:
     bool LinkShader();
 
 
+    std::map<std::string,ShaderUniformContainer> m_UniformLocations;
+
+
     bool m_AlreadyCreatedProgram = false;
     std::vector<unsigned int> m_CompiledShadersCache;
     std::shared_ptr<unsigned int> m_ID;
+
+
+    //static members
+
+    static std::unordered_map<std::string,std::unique_ptr<Shader>> m_LoadedShaders;
+
+
 
     friend struct ShaderCreationProperties;
 };

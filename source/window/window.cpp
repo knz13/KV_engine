@@ -1,9 +1,16 @@
 #include "window.h"
 #include "kv.h"
 
+Window* Window::m_MainWindow = nullptr;
 
 Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
     
+    if(Window::m_MainWindow != nullptr){
+        DEBUG_WARN("Creating a new Window with a main window already bound, deleting current window.");
+        Window::m_MainWindow->~Window();
+        Window::m_MainWindow = nullptr;
+    }
+
     if(glfwInit() != GLFW_TRUE){
         DEBUG_ERROR("GLFW was not initiated!");
         return;
@@ -63,9 +70,14 @@ Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
 
     GL_CALL(glEnable(GL_PROGRAM_POINT_SIZE));
 
+    Window::m_MainWindow = this;
+
 }
 
 Window::~Window() {
+
+    m_SubWindows.clear();
+
     for(auto& func : m_ClosingCallbackFuncs){
         func.second(*this);
     }
@@ -75,7 +87,6 @@ Window::~Window() {
     }
 
     glfwDestroyWindow(m_ContextPointer);
-
 }
 
 bool Window::IsOpen() {
@@ -112,16 +123,16 @@ const WindowCreationProperties& Window::Properties() const {
     return m_Properties;
 }
 
-FunctionSink<void(Window&)> Window::PostDrawingLoop() {
-    return FunctionSink<void(Window&)>(m_PostDrawingLoopFuncs);
+FunctionSink<void(Window&)> WindowEvents::PostDrawingLoop() {
+    return FunctionSink<void(Window&)>(m_Master.m_PostDrawingLoopFuncs);
 }
 
-FunctionSink<void(Window&)> Window::PreDrawingLoop() {
-    return FunctionSink<void(Window&)>(m_PreDrawingLoopFuncs);
+FunctionSink<void(Window&)> WindowEvents::PreDrawingLoop() {
+    return FunctionSink<void(Window&)>(m_Master.m_PreDrawingLoopFuncs);
 }
 
-FunctionSink<void(Window&)> Window::Closing() {
-    return FunctionSink<void(Window&)>(m_ClosingCallbackFuncs);
+FunctionSink<void(Window&)> WindowEvents::Closing() {
+    return FunctionSink<void(Window&)>(m_Master.m_ClosingCallbackFuncs);
 }
 void Window::SetCamera(Camera& camera) {
     m_MainCamera = &camera;
@@ -139,4 +150,79 @@ void Window::RemoveFromDrawingQueue(unsigned int id) {
     if(m_DrawingQueue.find(id) != m_DrawingQueue.end()){
         m_DrawingQueue.erase(id);
     }
+}
+
+WindowEvents Window::Events() {
+    return WindowEvents(*this);
+}
+
+void Window::DrawingLoop() {
+
+    glfwMakeContextCurrent(m_ContextPointer);
+    BeginDrawState();
+    
+    
+
+    for(auto& func : m_PreDrawingLoopFuncs){
+        func.second(*this);
+    }
+
+
+    //drawing objects 
+    for(auto& [handle,objectPointer] : m_DrawingQueue){
+            
+        if(!objectPointer->ReadyToDraw()){
+            continue;
+        }
+
+        objectPointer->Update(Registry::Get().DeltaTime());
+
+        Shader& currentObjectShader = *Shader::m_LoadedShaders[objectPointer->m_ShaderName].get();
+        
+        currentObjectShader.Bind();
+        currentObjectShader.SetUniformMat4f("MVP", GetCurrentCamera().GetViewProjection(*this)*objectPointer->GetModelMatrix());
+
+        for (auto& [preDrawFuncHandle,preDrawFunc] : objectPointer->Events().PreDrawCallbacks()){
+            preDrawFunc(*objectPointer,currentObjectShader);
+        }
+
+        objectPointer->Draw();
+
+        for (auto& [postDrawFuncHandle,postDrawFunc] : objectPointer->Events().PostDrawCallbacks()){
+            postDrawFunc(*objectPointer);
+        }
+    }
+
+    for(auto& func : m_PostDrawingLoopFuncs){
+        func.second(*this);
+    }
+
+    EndDrawState();
+
+    auto it = m_SubWindows.begin();
+
+    while(it != m_SubWindows.end()){
+        if(it->second.get()->IsOpen()){
+                it->second.get()->DrawingLoop();
+                it++;
+            }
+            else {
+                it = m_SubWindows.erase(it);
+            }
+
+
+    }
+
+    //drawing for subwindows
+
+}
+
+Window& Window::AddSubWindow(WindowCreationProperties prop) {
+    static unsigned int id = -1;
+    id++;
+
+    m_SubWindows[id] = std::unique_ptr<Window>(new Window(prop));
+    
+
+    return *m_SubWindows[id].get();
 }

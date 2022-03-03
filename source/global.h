@@ -16,6 +16,13 @@
 #include "../vendor/glm/glm/gtc/type_ptr.hpp"
 #include "general/structures.h"
 #include "general/color.h"
+#ifdef ENABLE_MODEL_LOADING
+#include "../vendor/assimp/include/assimp/Importer.hpp"
+#include "../vendor/assimp/include/assimp/scene.h"
+#include "../vendor/assimp/include/assimp/postprocess.h"
+#include "../vendor/assimp/include/assimp/matrix4x4.h"
+#include "../vendor/assimp/include/assimp/cimport.h"
+#endif
 
 using namespace std;
 
