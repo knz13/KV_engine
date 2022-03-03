@@ -211,7 +211,7 @@ install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTE
 #installing libraries from dependencies...
 
 
-include(CPack)        
+    install(FILES ${${PROJECT_NAME}_LIBRARIES} DESTINATION lib)    
 
 #adding dependencies
 
