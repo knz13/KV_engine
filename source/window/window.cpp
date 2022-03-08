@@ -1,15 +1,10 @@
 #include "window.h"
 #include "kv.h"
 
-Window* Window::m_MainWindow = nullptr;
+
+std::map<GLFWwindow*,Window*> Window::m_CurrentWindows;
 
 Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
-    
-    if(Window::m_MainWindow != nullptr){
-        DEBUG_WARN("Creating a new Window with a main window already bound, deleting current window.");
-        Window::m_MainWindow->~Window();
-        Window::m_MainWindow = nullptr;
-    }
 
     if(glfwInit() != GLFW_TRUE){
         DEBUG_ERROR("GLFW was not initiated!");
@@ -56,7 +51,10 @@ Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
     else {
         this->m_ContextPointer = glfwCreateWindow(prop.width,prop.height,prop.title.c_str(),NULL,NULL);
     }
+
+    Window::m_CurrentWindows[this->m_ContextPointer] = this;
     
+
     glfwMakeContextCurrent(this->m_ContextPointer);
 
     glewExperimental = true;
@@ -66,25 +64,72 @@ Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
     }
 
     CameraCreationProperties camProp;
-    Registry::Create().PerspectiveCamera(camProp,this);
+    Camera::GeneratePerspectiveCamera(camProp,*this);
 
     GL_CALL(glEnable(GL_PROGRAM_POINT_SIZE));
 
-    Window::m_MainWindow = this;
+    glfwSetKeyCallback(this->GetContextPointer(),[](GLFWwindow* ptr,int key, int scancode, int action, int mods){
+        Window& win = *Window::GetWindow(ptr);
+        KeyEventProperties prop;
+        prop.key = key;
+        prop.scancode = scancode;
+        prop.action = action;
+        prop.mods = mods;
+        win.m_KeyEventFuncs.EmitEvent(win,prop);
+    });
+
+    glfwSetCursorPosCallback(this->GetContextPointer(),[](GLFWwindow* window, double xpos, double ypos){
+        Window& win = *Window::GetWindow(window);
+        MouseEventProperties prop;
+        prop.position = glm::vec2(xpos,ypos);
+        win.m_MouseMovedFuncs.EmitEvent(win,prop);
+    });
+
+    glfwSetCursorEnterCallback(this->GetContextPointer(),[](GLFWwindow* window,int entered){
+        double xpos,ypos;
+        glfwGetCursorPos(window,&xpos,&ypos);
+        MouseEventProperties prop;
+        prop.position = glm::vec2(xpos,ypos);
+        Window& win = *Window::GetWindow(window);
+        if(entered){
+            win.m_MouseEnteredWindowFuncs.EmitEvent(win,prop);
+        }
+        else {
+            win.m_MouseLeftWindowFuncs.EmitEvent(win,prop);
+        }
+    });
+
+    glfwSetMouseButtonCallback(this->GetContextPointer(),[](GLFWwindow* window, int button, int action, int mods){
+        double xpos,ypos;
+        glfwGetCursorPos(window,&xpos,&ypos);
+        Window& win = *Window::GetWindow(window);
+        MouseButtonEventProperties prop;
+        prop.button = button;
+        prop.action = action;
+        prop.mods = mods;
+        prop.position = glm::vec2(xpos,ypos);
+        win.m_MouseButtonFuncs.EmitEvent(win,prop);
+    });
+
+    glfwSetScrollCallback(this->GetContextPointer(),[](GLFWwindow* window, double xoffset, double yoffset){
+        Window& win = *Window::GetWindow(window);
+        MouseScrollEventProperties prop;
+        prop.offsetFromTopLeft = glm::vec2(xoffset,yoffset);
+        win.m_MouseScrollFuncs.EmitEvent(win,prop);
+    });
 
 }
 
 Window::~Window() {
 
-    m_SubWindows.clear();
+    m_ClosingCallbackFuncs.EmitEvent(*this);
 
-    for(auto& func : m_ClosingCallbackFuncs){
-        func.second(*this);
-    }
+    m_CreatedShaders.clear();
+    m_CreatedVertexArrays.clear();
 
-    for(auto& [handle,obj] : m_DrawingQueue){
-       obj->~Drawable();
-    }
+    m_DrawingQueue.clear();
+
+    Window::m_CurrentWindows.erase(m_ContextPointer);
 
     glfwDestroyWindow(m_ContextPointer);
 }
@@ -123,17 +168,6 @@ const WindowCreationProperties& Window::Properties() const {
     return m_Properties;
 }
 
-FunctionSink<void(Window&)> WindowEvents::PostDrawingLoop() {
-    return FunctionSink<void(Window&)>(m_Master.m_PostDrawingLoopFuncs);
-}
-
-FunctionSink<void(Window&)> WindowEvents::PreDrawingLoop() {
-    return FunctionSink<void(Window&)>(m_Master.m_PreDrawingLoopFuncs);
-}
-
-FunctionSink<void(Window&)> WindowEvents::Closing() {
-    return FunctionSink<void(Window&)>(m_Master.m_ClosingCallbackFuncs);
-}
 void Window::SetCamera(Camera& camera) {
     m_MainCamera = &camera;
 }
@@ -143,7 +177,7 @@ Camera& Window::GetCurrentCamera() {
 }
 
 void Window::AddToDrawingQueue(unsigned int id) {
-    m_DrawingQueue[id] = Registry::Get().DrawableObjects()[id];
+    m_DrawingQueue[id] = Drawable::m_DrawableObjects[id];
 }
 
 void Window::RemoveFromDrawingQueue(unsigned int id) {
@@ -157,15 +191,17 @@ WindowEvents Window::Events() {
 }
 
 void Window::DrawingLoop() {
+    static float currentTime=0,oldTime=0;
 
     glfwMakeContextCurrent(m_ContextPointer);
     BeginDrawState();
     
-    
+    currentTime = glfwGetTime();
+    m_DeltaTime = static_cast<float>(currentTime - oldTime);
 
-    for(auto& func : m_PreDrawingLoopFuncs){
-        func.second(*this);
-    }
+    oldTime = currentTime;
+
+    m_PreDrawingLoopFuncs.EmitEvent(*this);
 
 
     //drawing objects 
@@ -175,54 +211,118 @@ void Window::DrawingLoop() {
             continue;
         }
 
-        objectPointer->Update(Registry::Get().DeltaTime());
+        objectPointer->Update(m_DeltaTime);
 
-        Shader& currentObjectShader = *Shader::m_LoadedShaders[objectPointer->m_ShaderName].get();
+        Shader& currentObjectShader = *m_CreatedShaders[objectPointer->m_ShaderName].get();
         
         currentObjectShader.Bind();
         currentObjectShader.SetUniformMat4f("MVP", GetCurrentCamera().GetViewProjection(*this)*objectPointer->GetModelMatrix());
 
-        for (auto& [preDrawFuncHandle,preDrawFunc] : objectPointer->Events().PreDrawCallbacks()){
-            preDrawFunc(*objectPointer,currentObjectShader);
-        }
+        objectPointer->m_PreDrawFuncs.EmitEvent(*objectPointer,currentObjectShader);
 
         objectPointer->Draw();
 
-        for (auto& [postDrawFuncHandle,postDrawFunc] : objectPointer->Events().PostDrawCallbacks()){
-            postDrawFunc(*objectPointer);
-        }
+        objectPointer->m_PostDrawFuncs.EmitEvent(*objectPointer);
     }
 
-    for(auto& func : m_PostDrawingLoopFuncs){
-        func.second(*this);
-    }
+    m_PostDrawingLoopFuncs.EmitEvent(*this);
 
     EndDrawState();
-
-    auto it = m_SubWindows.begin();
-
-    while(it != m_SubWindows.end()){
-        if(it->second.get()->IsOpen()){
-                it->second.get()->DrawingLoop();
-                it++;
-            }
-            else {
-                it = m_SubWindows.erase(it);
-            }
-
-
-    }
 
     //drawing for subwindows
 
 }
 
-Window& Window::AddSubWindow(WindowCreationProperties prop) {
-    static unsigned int id = -1;
-    id++;
 
-    m_SubWindows[id] = std::unique_ptr<Window>(new Window(prop));
+
+Window* Window::GetWindow(GLFWwindow* win) {
+    if(Window::m_CurrentWindows.find(win) != Window::m_CurrentWindows.end()){
+        return Window::m_CurrentWindows[win];
+    }
+    return nullptr;
+}
+
+VertexArray& WindowCreators::NewVertexArray() {
+    VertexArray& vertex = *m_Master.m_CreatedVertexArrays.emplace_back(std::make_unique<VertexArray>()).get();
+    return vertex;
+}
+
+Shader& WindowCreators::CachedShader(std::string shaderRelativePath, bool* loadResult) {
+    if(m_Master.m_CreatedShaders.find(shaderRelativePath) != m_Master.m_CreatedShaders.end()){
+        Shader& shader = *m_Master.m_CreatedShaders[shaderRelativePath].get();
+        if(loadResult){
+            *loadResult=true;
+        }
+        return shader;
+    }
+    
+    m_Master.m_CreatedShaders[shaderRelativePath] = std::make_unique<Shader>();
+    Shader& shader = *m_Master.m_CreatedShaders[shaderRelativePath].get();
+
+    if(!std::filesystem::exists(shaderRelativePath)){
+        LOG("Could not load shader at path " + std::filesystem::absolute(shaderRelativePath).string() + " passing empty shader");
+        if(loadResult){
+            *loadResult=false;
+        }
+        return shader;
+    }
+
+    std::vector<std::pair<ShaderType,std::string>> sources;
+    for(auto file : std::filesystem::directory_iterator(shaderRelativePath)){
+        std::string fileName = file.path().filename().string();
+
+        if(fileName.ends_with("vert")){
+            std::string source = LoadFileContents(std::filesystem::absolute(shaderRelativePath + "/" + fileName).string());
+            sources.push_back(std::make_pair(ShaderType::Vertex,source));
+        }
+        if(fileName.ends_with("frag")){
+            std::string source = LoadFileContents(std::filesystem::absolute(shaderRelativePath + "/" + fileName).string());
+            sources.push_back(std::make_pair(ShaderType::Fragment,source));
+        }
+    }
     
 
-    return *m_SubWindows[id].get();
+    ShaderCreationProperties prop = m_Master.m_CreatedShaders[shaderRelativePath].get()->CreateNew();
+    for(auto& [type,source] : sources){
+        prop.AddShader(type,source);
+    }
+
+    if(!prop.Generate()){
+        if(loadResult){
+            *loadResult=false;
+        }
+        return shader;
+    }
+
+    if(loadResult){
+        *loadResult=true;
+    }
+    return shader;
+
+}
+
+WindowCreators Window::Create() {
+    return WindowCreators(*this);
+}
+
+
+
+
+
+FunctionSink<void(Window&,MouseEventProperties)> WindowEvents::MouseLeftWindowEvent() {
+    return FunctionSink<void(Window&,MouseEventProperties)>(m_Master.m_MouseLeftWindowFuncs);
+}
+
+
+
+FunctionSink<void(Window&,MouseEventProperties)> WindowEvents::MouseEnteredWindowEvent() {
+    return FunctionSink<void(Window&,MouseEventProperties)>(m_Master.m_MouseEnteredWindowFuncs);
+}
+
+FunctionSink<void(Window&,MouseButtonEventProperties)> WindowEvents::MouseButtonEvent() {
+    return FunctionSink<void(Window&,MouseButtonEventProperties)>(m_Master.m_MouseButtonFuncs);
+}
+
+FunctionSink<void(Window&,MouseScrollEventProperties)> WindowEvents::MouseScrollEvent() {
+    return FunctionSink<void(Window&,MouseScrollEventProperties)>(m_Master.m_MouseScrollFuncs);
 }

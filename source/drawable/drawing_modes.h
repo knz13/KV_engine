@@ -75,9 +75,6 @@ public:
     float pointSize = 1;
 
 protected:
-    GLenum GetDrawingType() override {
-        GL_CALL(glPointSize(pointSize));
-        return GL_POINTS;
-    };
+    GLenum GetDrawingType() override;
 
 };

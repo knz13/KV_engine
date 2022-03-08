@@ -53,11 +53,6 @@ private:
     std::shared_ptr<unsigned int> m_ID;
 
 
-    //static members
-
-    static std::unordered_map<std::string,std::unique_ptr<Shader>> m_LoadedShaders;
-
-
 
     friend struct ShaderCreationProperties;
 };

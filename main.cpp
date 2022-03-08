@@ -9,46 +9,81 @@ int main(){
     Window win(prop);
 
 
-    Camera& camera = win.GetCurrentCamera();
+    Drawable dr(&win);
     
-    std::vector<std::unique_ptr<Drawable>> modelsAll;
-    for(int i = 0;i< 20 ; i++){
-        for(int y = 0;y< 20; y++){
-            std::unique_ptr<Drawable> dr = std::make_unique<Drawable>();
-            LoadingModelProperties prop;
-            prop.initializationFunc = [=](Drawable& model){
-                    model.SetPosition(-10 + y*3,i*3,-10);
-                    model.SetShader("res/shaders/base_shader");
-                };
-            if(ModelLoader::LoadModel("res/models/polyfit_sfm_filtered_normals_ransac_3.obj",*dr.get(),prop)){
-                modelsAll.push_back(std::move(dr));
+    std::vector<float> positions = {
+      // front
+    -1.0, -1.0,  1.0,
+     1.0, -1.0,  1.0,
+     1.0,  1.0,  1.0,
+    -1.0,  1.0,  1.0,
+    // back
+    -1.0, -1.0, -1.0,
+     1.0, -1.0, -1.0,
+     1.0,  1.0, -1.0,
+    -1.0,  1.0, -1.0
+    };
+
+    std::vector<unsigned int> indices = {
+        // front
+		0, 1, 2,
+		2, 3, 0,
+		// right
+		1, 5, 6,
+		6, 2, 1,
+		// back
+		7, 6, 5,
+		5, 4, 7,
+		// left
+		4, 0, 3,
+		3, 7, 4,
+		// bottom
+		4, 5, 1,
+		1, 0, 4,
+		// top
+		3, 2, 6,
+		6, 7, 3
+    };
+
+    dr.GetVertexArray().CreateVertexBuffer(8)
+        .AddAttribute(positions,false)
+        .Generate();
+
+    dr.GetVertexArray().CreateIndexBuffer()
+        .SetIndices(indices);
+
+    dr.SetPosition(0,0,-10);
+    dr.SetShader("res/shaders/base_shader");
+
+    win.Events().MouseButtonEvent().Connect(&dr,[](EventReceiver* rec,Window& win, MouseButtonEventProperties prop){
+        static int onOff = 0;
+        if(prop.action == GLFW_PRESS){
+            Drawable* dr = (Drawable*)rec;
+            if(onOff % 2 == 0){
+                dr->SetActive();
+                std::cout << "active!" << std::endl;
             }
+            else {
+                dr->SetInactive();
+                std::cout << "inactive ;-; !" << std::endl;
+            }
+
+            onOff++;
         }
-    }
-
-
-    
-
-
-
-
-    win.Events().PreDrawingLoop().Connect([&](Window& win){
         
-        //std::cout << camera.GetRotation().x << " " << camera.GetRotation().y <<" " << camera.GetRotation().z << endl;
-        if(glfwGetKey(win.GetContextPointer(),GLFW_KEY_A)){
-            camera.Rotate(0,-60*Registry::Get().DeltaTime(),0);
-        }
-        if(glfwGetKey(win.GetContextPointer(),GLFW_KEY_D)){
-            camera.Rotate(0,60*Registry::Get().DeltaTime(),0);
-        }
-        if(glfwGetKey(win.GetContextPointer(),GLFW_KEY_W)){
-            camera.Rotate(60*Registry::Get().DeltaTime(),0,0);
-        }
-        if(glfwGetKey(win.GetContextPointer(),GLFW_KEY_S)){
-            camera.Rotate(-60*Registry::Get().DeltaTime(),0,0);
-        }   
+        
     });
 
+    
 
-    Registry::MainLoop();  
+
+    while(win.IsOpen()){
+
+        win.DrawingLoop();
+
+    }
+    
+
+
+    
 }

@@ -135,6 +135,69 @@ set(${PROJECT_NAME}_LIBRARIES )
                     
 
 
+# repository download and settings for stb...
+
+    dir_exists(stb_exists ${PROJECT_SOURCE_DIR}/vendor/stb)
+
+
+    # adding includes:
+
+
+        list(APPEND ${PROJECT_NAME}_INCLUDES ${PROJECT_SOURCE_DIR}/vendor/stb)
+
+
+    if(NOT ${stb_exists})
+        FetchContent_Declare(STB
+        GIT_REPOSITORY https://github.com/nothings/stb
+        GIT_TAG origin/master
+        SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/stb
+        )
+
+        FetchContent_MakeAvailable(STB)
+
+    endif()
+                    
+
+
+# repository download and settings for assimp...
+
+    dir_exists(assimp_exists ${PROJECT_SOURCE_DIR}/vendor/assimp)
+
+
+    # adding includes:
+
+
+        list(APPEND ${PROJECT_NAME}_INCLUDES ${PROJECT_SOURCE_DIR}/vendor/assimp/include)
+
+
+    # adding libraries
+
+
+        list(APPEND ${PROJECT_NAME}_LIBRARIES ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}assimp-vc143-mt$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+        list(APPEND ${PROJECT_NAME}_LIBRARIES ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+
+    if(NOT ${assimp_exists} OR NOT ${${PROJECT_NAME}_BUILD_TYPE} STREQUAL ${CMAKE_BUILD_TYPE})
+        ExternalProject_Add(ASSIMP
+        GIT_REPOSITORY https://github.com/assimp/assimp
+        GIT_TAG v5.2.2
+        CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/assimp
+                    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+                    -DBUILD_SHARED_LIBS=OFF
+                        
+                    -DASSIMP_BUILD_TESTS=OFF
+                        
+        BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}assimp-vc143-mt$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX} ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX}
+        )
+
+        list(APPEND ${PROJECT_NAME}_DEPS_TO_BUILD ASSIMP)
+
+    endif()
+
+
+
+
 # finding package and adding settings for alias OpenGL...
 
 
@@ -167,26 +230,32 @@ list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/opengl_wra
 list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/general/color.cpp)
 
 
-list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/general/registry.cpp)
-
-
-list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/general/registry_creates.cpp)
-
-
-list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/general/registry_deleters.cpp)
-
-
-list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/general/registry_getters.cpp)
-
-
 list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/camera/camera.cpp)
 
 
 list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/drawable/drawable.cpp)
 
 
-#creating library
-add_library(${PROJECT_NAME}
+list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/general/structures.cpp)
+
+
+list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/model_loader/model_loader.cpp)
+
+
+list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/model_loader/texture_loader.cpp)
+
+
+list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/general/movable.cpp)
+
+
+list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/drawable/drawing_modes.cpp)
+
+
+list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/main.cpp)
+
+
+#creating executable
+add_executable(${PROJECT_NAME}
 
         ${${PROJECT_NAME}_SOURCE_FILES}
 )
@@ -196,27 +265,6 @@ add_library(${PROJECT_NAME}
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
         
-
-#installing library
-install(TARGETS ${PROJECT_NAME} DESTINATION lib RUNTIME_DEPENDENCIES)
-
-#installing includes
-
-
-install(DIRECTORY vendor/ DESTINATION vendor FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
-
-install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
-#installing libraries from dependencies...
-
-
-    install(FILES ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION lib)
-
-    install(FILES ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION lib)
-
-include(CPack)        
-
 #adding dependencies
 
 foreach(X ${${PROJECT_NAME}_DEPS_TO_BUILD})
@@ -236,10 +284,10 @@ endforeach()
 #------------ include directories -------------
 
 
-    list(APPEND ${PROJECT_NAME}_INCLUDES ${PROJECT_SOURCE_DIR}/vendor/)
+    list(APPEND ${PROJECT_NAME}_INCLUDES ${PROJECT_SOURCE_DIR}/vendor)
 
 
-    list(APPEND ${PROJECT_NAME}_INCLUDES ${PROJECT_SOURCE_DIR}/source/)
+    list(APPEND ${PROJECT_NAME}_INCLUDES ${PROJECT_SOURCE_DIR}/source)
 
 
     target_include_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_INCLUDES})
