@@ -1,4 +1,13 @@
 #pragma once
+#include <iostream>
+#include <map>
+#include <unordered_map>
+#include <functional>
+#include "../vendor/glm/glm/gtc/type_ptr.hpp"
+#include "../vendor/glm/glm/glm.hpp"
+#include "../vendor/glm/glm/gtc/quaternion.hpp"
+#include "../vendor/glm/glm/gtx/quaternion.hpp"
+#include "color.h"
 
 enum WindowFlag {
 
@@ -16,6 +25,33 @@ enum WindowFlag {
 enum ShaderType {
     Vertex=0,
     Fragment,
+};
+
+struct KeyEventProperties {
+    int key;
+    int scancode;
+    int action;
+    int mods;
+};
+
+struct MouseEventProperties {
+    glm::vec2 position;
+};
+
+struct MouseButtonEventProperties {
+    int button;
+    int action;
+    int mods;
+    glm::vec2 position;
+};
+
+struct WindowResizedEventProperties {
+    int width;
+    int height;
+};
+
+struct MouseScrollEventProperties {
+    glm::vec2 offsetFromTopLeft;
 };
 
 struct Transform {
@@ -124,53 +160,135 @@ struct WindowCreationProperties {
     int openGLVersionMinor = 0;
 };
 
-class Window;
-template<typename T>
-struct FunctionSink {
-    FunctionSink(std::map<uint32_t,std::function<T>>& sink);
 
-    uint32_t Connect(std::function<T> windowFunc);
-    bool Disconnect(uint32_t handle);
+
+
+template<typename T>
+struct EventLauncher;
+template<typename T>
+struct FunctionSink;
+
+struct EventReceiver {
+
+    ~EventReceiver();
 
 private:
+    std::map<size_t,std::function<void()>> m_SubscribedEvents;
 
-    bool GetNewHandle();
+    template<typename T>
+    friend struct FunctionSink;
+    template<typename T>
+    friend struct EventLauncher;
+};
 
-    std::map<uint32_t,std::function<T>>& m_FuncRef;
 
-    static std::map<void*,uint32_t> m_HandleCount;
+template<typename R,typename... Args>
+struct EventLauncher<R(Args...)> {
+
+    EventLauncher(){
+    };
+
+    ~EventLauncher() { 
+    }
+
+    
+    bool DisconnectReceiver(size_t hash) {
+        if(m_Receivers.find(hash) != m_Receivers.end()){
+            m_Receivers.erase(hash);
+            return true;
+        }
+        return false;
+    };
+
+
+    void EmitEvent(Args... args) {
+        
+        for(auto& [handle,func] : m_Receivers){
+            if(func){
+                (*func.get())(args...);
+            }
+        }
+    
+    };
+private:
+    std::unordered_map<size_t,std::shared_ptr<std::function<R(Args...)>>> m_Receivers;
+    size_t m_MyHash = std::hash<void*>()((void*)this);
+    
+    template<typename T>
+    friend struct FunctionSink;
 
 };
 
-template<typename T>
-std::map<void*,uint32_t> FunctionSink<T>::m_HandleCount;
 
-template<typename T>
-uint32_t FunctionSink<T>::Connect(std::function<T> windowFunc) {
-    uint32_t handle = GetNewHandle();
-    m_FuncRef[handle] = std::move(windowFunc);
-    return handle;
-}
 
-template<typename T>
-bool FunctionSink<T>::Disconnect(uint32_t handle) {
-    if(m_FuncRef.find(handle) != m_FuncRef.end()){
-        m_FuncRef.erase(handle);
+
+
+
+template<typename R,typename... Args>
+struct FunctionSink<R(Args...)> {
+    FunctionSink(EventLauncher<R(Args...)>& sink): m_Master(&sink){};
+
+    size_t Connect(std::function<R(Args...)> windowFunc){
+        static int count = 1;
+        size_t hash = std::hash<int>()(count);
+        count++;
+
+        std::function<R(Args...)>* func = new std::function<R(Args...)>(windowFunc);
+        m_Master->m_Receivers[hash] = std::make_shared<std::function<R(Args...)>>(*func);
+        return hash;
+
+    }
+
+    void Connect(EventReceiver* key,std::function<R(EventReceiver*,Args...)> windowFunc) {
+        
+        size_t hash = std::hash<void*>()((void*)key);
+        auto deleter = [=](std::function<R(Args...)>* func){
+            key->m_SubscribedEvents.erase(m_Master->m_MyHash);
+            delete func;
+        };
+
+        auto func = new std::function<R(Args...)>(std::bind(windowFunc,key,std::placeholders::_1,std::placeholders::_2));
+        m_Master->m_Receivers[hash] = std::shared_ptr<std::function<R(Args...)>>(func,deleter);
+        key->m_SubscribedEvents[m_Master->m_MyHash] = [=](){
+            m_Master->DisconnectReceiver(hash);
+        };
+        
+    };
+
+    bool Disconnect(size_t hashKey){
+        return m_Master->DisconnectReceiver(hashKey);
+    }
+
+    bool Disconnect(EventReceiver* key) {
+        if(key == nullptr){
+            return false;
+        }
+        size_t hash = std::hash<void*>()((void*)key);
+        if(m_Master->m_Receivers.find(hash) != m_Master->m_Receivers.end()){
+            m_Master->DisconnectReceiver(hash);
+        }
+        else {
+            return false;
+        }
         return true;
     }
-    return false;
-}
+
+private:
+
+   
+
+    EventLauncher<R(Args...)>* m_Master;
+    
+    
+};
 
 
-template<typename T>
-FunctionSink<T>::FunctionSink(std::map<uint32_t,std::function<T>>& sink) : m_FuncRef(sink){
-    if(FunctionSink::m_HandleCount.find((void*)&sink) == FunctionSink::m_HandleCount.end()){
-        FunctionSink::m_HandleCount[(void*)&sink] = 0;
-    }
-}
 
-template<typename T>
-bool FunctionSink<T>::GetNewHandle() {
 
-    return FunctionSink::m_HandleCount[(void*)&m_FuncRef]++;
-}
+
+
+
+
+
+
+

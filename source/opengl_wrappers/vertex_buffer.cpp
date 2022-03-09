@@ -1,5 +1,4 @@
 #include "vertex_buffer.h"
-#include "../general/registry.h"
 #include "vertex_array.h"
 
 

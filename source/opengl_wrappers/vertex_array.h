@@ -2,6 +2,7 @@
 #include "vertex_buffer.h"
 #include "index_buffer.h"
 
+
 class VertexArray {
 public:
     VertexArray();

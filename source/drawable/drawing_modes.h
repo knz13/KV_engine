@@ -5,10 +5,23 @@
 
 class DrawingMode {
     KV_DRAWING_MODE
+
+public:
+    DrawingMode(){
+        m_CreateFunction = [](){
+            return GL_TRIANGLES;
+        };
+    }
+
 protected:
-    virtual GLenum GetDrawingType(){
-        return GL_TRIANGLES;
+
+    GLenum GetDrawingType(){
+        return m_CreateFunction();
     };
+
+    std::function<GLenum()> m_CreateFunction;
+
+
 };
 
 
@@ -21,22 +34,33 @@ enum class LineModeType {
 class LineMode : public DrawingMode {
     KV_DRAWING_MODE
 public:
-    LineModeType type = LineModeType::Lines;
 
-protected:
-    GLenum GetDrawingType() override {
-        switch(type){
+    LineMode(){
+        SetLineType(LineModeType::Lines);
+    }
+
+    LineMode(LineModeType tp){
+        SetLineType(tp);
+    }
+
+    void SetLineType(LineModeType tp){
+        switch(tp){
         case LineModeType::Lines:
-            return GL_LINES;
-        case LineModeType::LineStrip:
-            return GL_LINE_STRIP;
-        case LineModeType::LineLoop:
-            return GL_LINE_LOOP;
-        default:
+            m_CreateFunction = [](){ return GL_LINES; };
             break;
-        };
-
+        case LineModeType::LineLoop:
+            m_CreateFunction = [](){ return GL_LINE_LOOP;};
+            break;
+        case LineModeType::LineStrip:
+            m_CreateFunction = [](){ return GL_LINE_STRIP;};
+            break;
+        }
     };
+
+private:
+
+    
+
 };
 
 enum class TriangleModeType {
@@ -49,22 +73,30 @@ class TriangleMode : public DrawingMode {
     KV_DRAWING_MODE
 
 public:
-    TriangleModeType type = TriangleModeType::Triangle;
 
-protected:
-    GLenum GetDrawingType() override {
-        switch(type){
+    TriangleMode(TriangleModeType tp){
+        SetTriangleType(tp);
+    }
+
+    TriangleMode(){
+        SetTriangleType(TriangleModeType::Triangle);
+    };
+
+    void SetTriangleType(TriangleModeType tp){
+        switch(tp){
         case TriangleModeType::Triangle:
-            return GL_TRIANGLES;
+            m_CreateFunction = [](){return GL_TRIANGLES;};
+            break;
         case TriangleModeType::TriangleStrip:
-            return GL_TRIANGLE_STRIP;
+            m_CreateFunction = [](){return GL_TRIANGLE_STRIP;};
+            break;
         case TriangleModeType::TriangleFan:
-            return GL_TRIANGLE_FAN;
+            m_CreateFunction = [](){return GL_TRIANGLE_FAN;};
+            break;
         default:
             break;
         };
     }
-
 
 };
 
@@ -72,12 +104,17 @@ class PointsMode : public DrawingMode {
     KV_DRAWING_MODE
 
 public:
-    float pointSize = 1;
 
-protected:
-    GLenum GetDrawingType() override {
-        GL_CALL(glPointSize(pointSize));
-        return GL_POINTS;
+    PointsMode(float size){
+        SetPointSize(size);
+    }
+
+    PointsMode(){
+        m_CreateFunction = [](){return GL_POINTS;};
+    };
+
+    void SetPointSize(float size){
+        m_CreateFunction = [=](){GL_CALL(glPointSize(size)); return GL_POINTS;};
     };
 
 };

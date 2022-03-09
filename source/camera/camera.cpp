@@ -15,47 +15,20 @@ void Camera::SetDirection(float x, float y, float z) {
     m_Rotation = glm::eulerAngles(glm::quatLookAt(glm::vec3(x,y,z),glm::vec3(0,1,0)));
 }
 
-void Camera::Rotate(float pitch, float yaw, float roll) {
-
-    m_Rotation += glm::radians(glm::vec3(pitch,-yaw,roll));
-}
-
-void Camera::SetRotation(float pitch, float yaw, float roll) {
-    m_Rotation = glm::radians(glm::vec3(pitch,-yaw,roll));
-}
-
-void Camera::Move(float x, float y, float z) {
-    m_Position.x += x;
-    m_Position.y += y;
-    m_Position.z += z;
-}
-
-void Camera::SetPosition(float x, float y, float z) {
-    m_Position = glm::vec3(x,y,z);
-}
-
-const glm::vec3& Camera::GetPosition() {
-    return m_Position;
-}
-
 glm::mat4 Camera::GetViewProjection(const Window& window) {
     return glm::perspective(m_Fov,(float)window.Properties().width/window.Properties().height,m_DrawNear,m_DrawDistance) * glm::inverse(glm::translate(glm::mat4(1.0f),m_Position)* glm::toMat4(glm::quat(m_Rotation)));
 }
 
-Camera::Camera() {
+Camera::Camera(Window* win) : m_CurrentWindow(win) {
     
-}
-
-glm::vec3 Camera::GetRotation() {
-    return glm::degrees(glm::vec3(m_Rotation.x,-m_Rotation.y,m_Rotation.z));
 }
 
 glm::vec4 Camera::GetViewPort() {
     return m_ViewPort;
 }
 
-Camera& Camera::GeneratePerspectiveCamera(CameraCreationProperties prop, Window* windowToSetCurrentOn) {
-    Camera camera;
+Camera& Camera::GeneratePerspectiveCamera(CameraCreationProperties prop, Window& windowToSetCurrentOn) {
+    Camera camera(&windowToSetCurrentOn);
 
     camera.m_Fov = prop.fov;
     camera.m_DrawNear = prop.drawingNearCutoff;
@@ -76,9 +49,20 @@ Camera& Camera::GeneratePerspectiveCamera(CameraCreationProperties prop, Window*
 
     Camera::m_Cameras[prop.cameraName] = std::move(camera);
 
-    if(windowToSetCurrentOn){
-        windowToSetCurrentOn->SetCamera(Camera::m_Cameras[prop.cameraName]);
-    }
+    windowToSetCurrentOn.SetCamera(Camera::m_Cameras[prop.cameraName]);
 
     return Camera::m_Cameras[prop.cameraName];
+}
+
+void Camera::Update(float deltaTime) {
+    
+}
+
+
+Camera::~Camera() {
+    
+}
+
+void Camera::LookAt(Movable& mov) {
+    this->SetLookAt(mov.GetPosition().x,mov.GetPosition().y,mov.GetPosition().z);
 }

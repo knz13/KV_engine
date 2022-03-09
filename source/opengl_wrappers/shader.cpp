@@ -1,7 +1,7 @@
 #include "shader.h"
 
 
-std::unordered_map<std::string,std::unique_ptr<Shader>> Shader::m_LoadedShaders;
+
 
 Shader::Shader() {
     
@@ -223,60 +223,62 @@ ShaderCreationProperties::ShaderCreationProperties(Shader& master) {
 
 bool Shader::SetUniform1f(const string& name, float value) {
     this->Bind();
-    int location;
-    GL_CALL(location = glGetUniformLocation(*m_ID.get(),name.c_str()));
-    if(location == -1){
-        
+    if(m_UniformLocations.find(name) != m_UniformLocations.end()){
+        GL_CALL(glUniform1f(m_UniformLocations[name].location,value));
+        return true;
+    }
+    else{
         return false;
     }
-    GL_CALL(glUniform1f(location,value));
     
 }
 
 bool Shader::SetUniform1i(const string& name, int value) {
     this->Bind();
-    int location;
-    GL_CALL(location = glGetUniformLocation(*m_ID.get(),name.c_str()));
-    if(location == -1){
-        
+    if(m_UniformLocations.find(name) != m_UniformLocations.end()){
+        GL_CALL(glUniform1i(m_UniformLocations[name].location,value));
+        return true;
+    }
+    else{
         return false;
     }
-    GL_CALL(glUniform1i(location,value));
+    
     
 }
 
 bool Shader::SetUniform3f(const string& name, float v0, float v1, float v2) {
     this->Bind();
-    int location;
-    GL_CALL(location = glGetUniformLocation(*m_ID.get(),name.c_str()));
-    if(location == -1){
-        
+    if(m_UniformLocations.find(name) != m_UniformLocations.end()){
+        GL_CALL(glUniform3f(m_UniformLocations[name].location,v0,v1,v2));
+        return true;
+    }
+    else{
         return false;
     }
-    GL_CALL(glUniform3f(location,v0,v1,v2));
+    
     
 }
 
 bool Shader::SetUniform4f(const string& name, float v0, float v1, float v2, float v3) {
     this->Bind();
-    int location;
-    GL_CALL(location = glGetUniformLocation(*m_ID.get(),name.c_str()));
-    if(location == -1){
-        
+    if(m_UniformLocations.find(name) != m_UniformLocations.end()){
+        GL_CALL(glUniform4f(m_UniformLocations[name].location,v0,v1,v2,v3));
+        return true;
+    }
+    else{
         return false;
     }
-    GL_CALL(glUniform4f(location,v0,v1,v2,v3));
     
 }
 
 bool Shader::SetUniformMat4f(const string& name, const glm::mat4& mat) {
     this->Bind();
-    int location;
-    GL_CALL(location = glGetUniformLocation(*m_ID.get(),name.c_str()));
-    if(location == -1){
-        
+    if(m_UniformLocations.find(name) != m_UniformLocations.end()){
+        GL_CALL(glUniformMatrix4fv(m_UniformLocations[name].location,1,GL_FALSE,glm::value_ptr(mat)));
+        return true;
+    }
+    else{
         return false;
     }
-    GL_CALL(glUniformMatrix4fv(location,1,GL_FALSE,glm::value_ptr(mat)));
     
 }
