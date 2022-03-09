@@ -5,12 +5,12 @@ int main(){
     WindowCreationProperties prop;
     prop.width = 1280;
     prop.height = 720;
-    prop.title = "hello";
+    prop.title = "window";
     Window win(prop);
 
 
     Drawable dr(&win);
-    
+    /*
     std::vector<float> positions = {
       // front
     -1.0, -1.0,  1.0,
@@ -52,13 +52,18 @@ int main(){
     dr.GetVertexArray().CreateIndexBuffer()
         .SetIndices(indices);
 
+    */
+
+    ModelLoader::LoadModel("res/models/polyfit_sfm_filtered_normals_ransac_3.obj",dr);
     dr.SetPosition(0,0,-10);
     dr.SetShader("res/shaders/base_shader");
 
     win.Events().MouseButtonEvent().Connect(&dr,[](EventReceiver* rec,Window& win, MouseButtonEventProperties prop){
         static int onOff = 0;
+        Drawable* dr = (Drawable*)rec;
+
         if(prop.action == GLFW_PRESS){
-            Drawable* dr = (Drawable*)rec;
+
             if(onOff % 2 == 0){
                 dr->SetActive();
                 std::cout << "active!" << std::endl;
@@ -74,6 +79,28 @@ int main(){
         
     });
 
+    win.Events().KeyEvent().Connect(&dr,[](EventReceiver* rec,Window& win,KeyEventProperties prop){
+        Drawable* dr = (Drawable*)rec;
+        if(prop.action == GLFW_PRESS){
+
+            if(prop.key == GLFW_KEY_A){
+                LineMode mode;
+                dr->SetDrawingMode(mode);
+            }
+            if(prop.key == GLFW_KEY_D){
+                TriangleMode mode;
+                dr->SetDrawingMode(mode);
+            }
+            if(prop.key == GLFW_KEY_W){
+                PointsMode mode;
+                dr->SetDrawingMode(mode);
+            }
+            
+        }
+    });
+
+
+    
     
 
 

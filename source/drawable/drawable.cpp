@@ -106,9 +106,6 @@ void Drawable::SetDrawingMode(DrawingMode mode) {
 
 
 
-void Drawable::Copy(const Drawable& dr) {
- 
-}
 
 void Drawable::DestroyDrawableHandle(unsigned int id) {
     if(m_DrawableObjects.find(id) != m_DrawableObjects.end()){

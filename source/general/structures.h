@@ -45,6 +45,11 @@ struct MouseButtonEventProperties {
     glm::vec2 position;
 };
 
+struct WindowResizedEventProperties {
+    int width;
+    int height;
+};
+
 struct MouseScrollEventProperties {
     glm::vec2 offsetFromTopLeft;
 };

@@ -118,11 +118,29 @@ Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
         win.m_MouseScrollFuncs.EmitEvent(win,prop);
     });
 
+    glfwSetFramebufferSizeCallback(this->GetContextPointer(),[](GLFWwindow* window, int width, int height){
+        Window& win = *Window::GetWindow(window);
+        WindowResizedEventProperties prop;
+        prop.width = width;
+        prop.height = height;
+        win.m_WindowResizedEventFuncs.EmitEvent(win,prop);
+    });
+
+    glfwSetWindowCloseCallback(this->GetContextPointer(),[](GLFWwindow* window){
+        Window& win = *Window::GetWindow(window);
+        win.m_ClosingCallbackFuncs.EmitEvent(win);
+    });
+
+    this->Events().ResizedEvent().Connect([](Window& win,WindowResizedEventProperties prop){
+        win.m_Properties.width = prop.width;
+        win.m_Properties.height = prop.height;
+        glm::vec4 viewport = win.GetCurrentCamera().GetViewPort();
+        GL_CALL(glViewport(viewport.x*win.m_Properties.width,viewport.y*win.m_Properties.height,viewport.z*win.m_Properties.width,viewport.w*win.m_Properties.height));
+    });
+
 }
 
 Window::~Window() {
-
-    m_ClosingCallbackFuncs.EmitEvent(*this);
 
     m_CreatedShaders.clear();
     m_CreatedVertexArrays.clear();
@@ -148,10 +166,6 @@ void Window::EndDrawState() {
 
 void Window::BeginDrawState() {
     glfwPollEvents();
-    glfwGetWindowSize(m_ContextPointer, &m_Properties.width, &m_Properties.height);
-    
-    glm::vec4 viewport = GetCurrentCamera().GetViewPort();
-    GL_CALL(glViewport(viewport.x*m_Properties.width,viewport.y*m_Properties.height,viewport.z*m_Properties.width,viewport.w*m_Properties.height));
 
     glm::vec3 color = m_ClearColor.Normalized();
     GL_CALL(glClearColor(color.x,color.y,color.z,1.0f));
@@ -325,4 +339,12 @@ FunctionSink<void(Window&,MouseButtonEventProperties)> WindowEvents::MouseButton
 
 FunctionSink<void(Window&,MouseScrollEventProperties)> WindowEvents::MouseScrollEvent() {
     return FunctionSink<void(Window&,MouseScrollEventProperties)>(m_Master.m_MouseScrollFuncs);
+}
+
+FunctionSink<void(Window&,WindowResizedEventProperties)> WindowEvents::ResizedEvent() {
+    return FunctionSink<void(Window&,WindowResizedEventProperties)>(m_Master.m_WindowResizedEventFuncs);
+}
+
+FunctionSink<void(Window&,KeyEventProperties)> WindowEvents::KeyEvent() {
+    return FunctionSink<void(Window&,KeyEventProperties)>(m_Master.m_KeyEventFuncs);
 }

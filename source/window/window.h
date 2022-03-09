@@ -12,6 +12,7 @@ struct WindowEvents {
 
     WindowEvents(Window& win) : m_Master(win) {};
 
+
     FunctionSink<void(Window&,MouseScrollEventProperties)> MouseScrollEvent();
     FunctionSink<void(Window&,MouseButtonEventProperties)> MouseButtonEvent();
     FunctionSink<void(Window&,MouseEventProperties)> MouseEnteredWindowEvent();
@@ -21,6 +22,7 @@ struct WindowEvents {
     FunctionSink<void(Window&)> PreDrawingLoopEvent();
     FunctionSink<void(Window&)> PostDrawingLoopEvent();
     FunctionSink<void(Window&)> ClosingEvent();
+    FunctionSink<void(Window&,WindowResizedEventProperties)> ResizedEvent();
 
 private:
     Window& m_Master;
@@ -97,6 +99,9 @@ private:
     std::vector<std::unique_ptr<VertexArray>> m_CreatedVertexArrays;
     std::map<std::string,std::unique_ptr<Shader>> m_CreatedShaders;
     std::map<unsigned int,Drawable*> m_DrawingQueue;
+
+    
+    EventLauncher<void(Window&,WindowResizedEventProperties)> m_WindowResizedEventFuncs;
     EventLauncher<void(Window&,MouseEventProperties)> m_MouseMovedFuncs;
     EventLauncher<void(Window&,MouseEventProperties)> m_MouseEnteredWindowFuncs;
     EventLauncher<void(Window&,MouseEventProperties)> m_MouseLeftWindowFuncs;
