@@ -68,10 +68,17 @@ public:
     const WindowCreationProperties& Properties() const;
     GLFWwindow* GetContextPointer();
 
-    static Window* GetWindow(GLFWwindow* win);
     void DrawingLoop();
+    
+    
+    
+    static Window* GetWindow(GLFWwindow* win);
+    static FunctionSink<void(Window&)> WindowCreationEvent();
+    
 
     
+
+
 protected:
 
     void AddToDrawingQueue(unsigned int id);
@@ -118,6 +125,7 @@ private:
     //static members
 
 
+    static EventLauncher<void(Window&)> m_StartWindowFuncs;
 
     static std::map<GLFWwindow*,Window*> m_CurrentWindows;
 

@@ -22,7 +22,9 @@
 #include "../vendor/assimp/include/assimp/postprocess.h"
 #include "../vendor/assimp/include/assimp/matrix4x4.h"
 #include "../vendor/assimp/include/assimp/cimport.h"
-
+#include "imgui.h"
+#include "imgui/backends/imgui_impl_glfw.h"
+#include "imgui/backends/imgui_impl_opengl3.h"
 
 using namespace std;
 

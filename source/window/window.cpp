@@ -3,6 +3,7 @@
 
 
 std::map<GLFWwindow*,Window*> Window::m_CurrentWindows;
+EventLauncher<void(Window&)> Window::m_StartWindowFuncs;
 
 Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
 
@@ -137,6 +138,12 @@ Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
         glm::vec4 viewport = win.GetCurrentCamera().GetViewPort();
         GL_CALL(glViewport(viewport.x*win.m_Properties.width,viewport.y*win.m_Properties.height,viewport.z*win.m_Properties.width,viewport.w*win.m_Properties.height));
     });
+
+
+    //handle creation events
+
+    Window::m_StartWindowFuncs.EmitEvent(*this);
+
 
 }
 
@@ -347,4 +354,16 @@ FunctionSink<void(Window&,WindowResizedEventProperties)> WindowEvents::ResizedEv
 
 FunctionSink<void(Window&,KeyEventProperties)> WindowEvents::KeyEvent() {
     return FunctionSink<void(Window&,KeyEventProperties)>(m_Master.m_KeyEventFuncs);
+}
+
+FunctionSink<void(Window&)> Window::WindowCreationEvent() {
+    return FunctionSink<void(Window&)>(Window::m_StartWindowFuncs);
+}
+
+FunctionSink<void(Window&)> WindowEvents::PreDrawingLoopEvent() {
+    return FunctionSink<void(Window&)>(m_Master.m_PreDrawingLoopFuncs);
+}
+
+FunctionSink<void(Window&)> WindowEvents::PostDrawingLoopEvent() {
+    return FunctionSink<void(Window&)>(m_Master.m_PostDrawingLoopFuncs);
 }

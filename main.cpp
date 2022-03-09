@@ -1,58 +1,69 @@
 #include <iostream>
 #include "kv.h"
+#include "imgui.h"
 
 int main(){
+
+    Window::WindowCreationEvent().Connect([](Window& win){
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO(); (void)io;
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+        //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+        //io.ConfigViewportsNoAutoMerge = true;
+        //io.ConfigViewportsNoTaskBarIcon = true;
+
+        // Setup Dear ImGui style
+        ImGui::StyleColorsDark();
+        //ImGui::StyleColorsClassic();
+
+        // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+        ImGuiStyle& style = ImGui::GetStyle();
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            style.WindowRounding = 0.0f;
+            style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+        }
+
+        // Setup Platform/Renderer backends
+        ImGui_ImplGlfw_InitForOpenGL(win.GetContextPointer(), true);
+        ImGui_ImplOpenGL3_Init("#version 430 core");
+    });
+
+
     WindowCreationProperties prop;
     prop.width = 1280;
     prop.height = 720;
     prop.title = "window";
     Window win(prop);
 
+    win.Events().PreDrawingLoopEvent().Connect([](Window& win){
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::Begin("Hey!");
+
+
+        ImGui::End();
+    });
+
+    win.Events().PostDrawingLoopEvent().Connect([](Window& win){
+        ImGuiIO& io = ImGui::GetIO();
+        ImGui::Render();
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            GLFWwindow* backup_current_context = glfwGetCurrentContext();
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+            glfwMakeContextCurrent(backup_current_context);
+        }
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    });
+
 
     Drawable dr(&win);
-    /*
-    std::vector<float> positions = {
-      // front
-    -1.0, -1.0,  1.0,
-     1.0, -1.0,  1.0,
-     1.0,  1.0,  1.0,
-    -1.0,  1.0,  1.0,
-    // back
-    -1.0, -1.0, -1.0,
-     1.0, -1.0, -1.0,
-     1.0,  1.0, -1.0,
-    -1.0,  1.0, -1.0
-    };
-
-    std::vector<unsigned int> indices = {
-        // front
-		0, 1, 2,
-		2, 3, 0,
-		// right
-		1, 5, 6,
-		6, 2, 1,
-		// back
-		7, 6, 5,
-		5, 4, 7,
-		// left
-		4, 0, 3,
-		3, 7, 4,
-		// bottom
-		4, 5, 1,
-		1, 0, 4,
-		// top
-		3, 2, 6,
-		6, 7, 3
-    };
-
-    dr.GetVertexArray().CreateVertexBuffer(8)
-        .AddAttribute(positions,false)
-        .Generate();
-
-    dr.GetVertexArray().CreateIndexBuffer()
-        .SetIndices(indices);
-
-    */
 
     ModelLoader::LoadModel("res/models/polyfit_sfm_filtered_normals_ransac_3.obj",dr);
     dr.SetPosition(0,0,-10);
@@ -99,12 +110,14 @@ int main(){
         }
     });
 
-
+    
     
     
 
 
     while(win.IsOpen()){
+
+
 
         win.DrawingLoop();
 
