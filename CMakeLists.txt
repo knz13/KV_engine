@@ -285,8 +285,11 @@ list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/general/mo
 list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/source/drawable/drawing_modes.cpp)
 
 
-#creating library
-add_library(${PROJECT_NAME}
+list(APPEND ${PROJECT_NAME}_SOURCE_FILES ${PROJECT_SOURCE_DIR}/main.cpp)
+
+
+#creating executable
+add_executable(${PROJECT_NAME}
 
         ${${PROJECT_NAME}_SOURCE_FILES}
 )
@@ -296,31 +299,6 @@ add_library(${PROJECT_NAME}
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
         
-
-#installing library
-install(TARGETS ${PROJECT_NAME} DESTINATION lib RUNTIME_DEPENDENCIES)
-
-#installing includes
-
-
-install(DIRECTORY vendor/ DESTINATION vendor FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
-
-install(DIRECTORY source/ DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.inl")
-
-#installing libraries from dependencies...
-
-
-    install(FILES ${PROJECT_SOURCE_DIR}/vendor/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glew$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION lib)
-
-    install(FILES ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}assimp-vc143-mt$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION lib)
-
-    install(FILES ${PROJECT_SOURCE_DIR}/vendor/assimp/lib/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION lib)
-
-    install(FILES ${PROJECT_SOURCE_DIR}/vendor/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION lib)
-
-include(CPack)        
-
 #adding dependencies
 
 foreach(X ${${PROJECT_NAME}_DEPS_TO_BUILD})
@@ -340,10 +318,10 @@ endforeach()
 #------------ include directories -------------
 
 
-    list(APPEND ${PROJECT_NAME}_INCLUDES ${PROJECT_SOURCE_DIR}/vendor/)
+    list(APPEND ${PROJECT_NAME}_INCLUDES ${PROJECT_SOURCE_DIR}/vendor)
 
 
-    list(APPEND ${PROJECT_NAME}_INCLUDES ${PROJECT_SOURCE_DIR}/source/)
+    list(APPEND ${PROJECT_NAME}_INCLUDES ${PROJECT_SOURCE_DIR}/source)
 
 
     target_include_directories(${PROJECT_NAME} PUBLIC ${${PROJECT_NAME}_INCLUDES})
